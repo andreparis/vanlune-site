@@ -1,5 +1,7 @@
 .DS_STORE
+.next/*
 node_modules
+out
 scripts/flow/*/.flowconfig
 .flowconfig
 *~

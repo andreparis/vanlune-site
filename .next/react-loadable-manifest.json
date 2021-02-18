@@ -1,22 +1,70 @@
 {
-  "./dev/noop": [
-    {
-      "id": "./node_modules/next/dist/client/dev/noop.js",
-      "file": "static/chunks/0.js"
-    }
-  ],
   "@apollo/react-ssr": [
     {
-      "id": "./node_modules/@apollo/react-ssr/lib/react-ssr.esm.js",
-      "file": "static/chunks/1.js"
+      "id": "+wdc",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
     },
     {
-      "id": "./node_modules/react-dom/cjs/react-dom-server.browser.development.js",
-      "file": "static/chunks/1.js"
+      "id": "16Al",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
     },
     {
-      "id": "./node_modules/react-dom/server.browser.js",
-      "file": "static/chunks/1.js"
+      "id": "17x9",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "8L3h",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "IDhZ",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "KAy6",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "QCnb",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "WbBG",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "f/k9",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "i8i4",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "q1tI",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "viRO",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "yl30",
+      "file": "static/chunks/framework.4f0f880714794e16be83.js"
+    },
+    {
+      "id": "83xU",
+      "file": "static/chunks/121.54b5e41467e1b89f4e58.js"
+    }
+  ],
+  "react-apexcharts": [
+    {
+      "id": "ujAs",
+      "file": "static/chunks/6c44d60f.5f17550b40a1f7dce322.js"
+    },
+    {
+      "id": "o+DJ",
+      "file": "static/chunks/122.ecbaf04a53d6686d2d3e.js"
     }
   ]
 }
