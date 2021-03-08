@@ -80,9 +80,9 @@ const FooterFive = ({layoutClass, logoName}) => {
                                             </div>
                                             <div className="footer-contant">
                                                 <ul className="contact-details">
-                                                    <li>Vanlune Ecommerce for Gamers</li>
+                                                    <li>PLAYER2 Ecommerce for Gamers</li>
                                                     <li>Call Us: 55 27 9123 4567</li>
-                                                    <li>Email: <a href="#">Support@vanlune.com</a></li>
+                                                    <li>Email: <a href="#">Support@PLAYER2.com</a></li>
                                                 </ul>
                                             </div>
                                         </div>

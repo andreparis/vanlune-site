@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { Row, Col, Media, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import React, { useState, useContext, useEffect } from 'react';
+import { Row, Col, Media, Modal, ModalBody, ModalHeader, Input } from 'reactstrap';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { CurrencyContext } from '../../../helpers/Currency/CurrencyContext';
@@ -22,6 +22,7 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
     const curContext = useContext(CurrencyContext);
     const currency = curContext.state;
     const uniqueTags = [];
+    const [modalServer, setModalServer] = useState('');
 
 
     const onClickHandle = (img) => {
@@ -46,12 +47,31 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
         })
     }
 
+    const getFactorForItem = (variants) => {
+        console.log(modalServer);
+        for(let j = 0; j < variants.length; j++){
+            if (variants[j].name == modalServer) {
+                return variants[j].factor;
+            }
+        }
+
+        return 1.0
+    };
+
+    const onChangeModalFactor = (e) => {
+        console.log(e.target.value);
+        let server = e.target.value.split(' ')[0];
+        setModalServer(server);
+    };
+
+    const setModalServerDefault = (server, variants) => {
+        setModalServer(server);
+    }
+
     let RatingStars = []
     for (var i = 0; i < product.rating; i++) {
         RatingStars.push(<i className="fa fa-star" key={i}></i>)
     }
-
-
 
     return (
         <>
@@ -95,9 +115,9 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
                         <a href={null} data-toggle="modal" data-target="#quick-view" title="Quick View" onClick={toggle}>
                             <i className="fa fa-search" aria-hidden="true"></i>
                         </a>
-                        <a href={null} title="Compare" onClick={toggleCompare}>
+                        {/* <a href={null} title="Compare" onClick={toggleCompare}>
                             <i className="fa fa-refresh" aria-hidden="true"></i>
-                        </a>
+                        </a> */}
                         <Modal isOpen={modalCompare} toggle={toggleCompare} size="lg" centered>
                             <ModalHeader toggle={toggleCompare}>Quick View</ModalHeader>
                             <ModalBody>
@@ -143,7 +163,7 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
                     </div>
                     <h6>{product.title}</h6>
                     <h4>{currency.symbol}{((product.price - (product.price * product.discount / 100))*currency.value).toFixed(2)}
-                        <del><span className="money">{currency.symbol}{(product.price * currency.value).toFixed(2) }</span></del>
+                        {product.sale ? <del><span className="money">{currency.symbol}{(product.price * currency.value).toFixed(2) }</span></del> : ''}
                     </h4>
                     {product.variants.map(vari => {
                         var findItem = uniqueTags.find(x => x.color === vari.color);
@@ -178,17 +198,16 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
                             <Col lg="6" className="rtl-text">
                                 <div className="product-right">
                                     <h2> {product.title} </h2>
-                                    <h3>{currency.symbol}{(product.price * currency.value).toFixed(2) }</h3>
+                                    <h3>{currency.symbol}{(product.price * currency.value * getFactorForItem(product.variants)).toFixed(2) }</h3>
                                     {product.variants ?
-                                        <ul className="color-variant">
-                                            {uniqueTags ?
-                                                <ul className="color-variant">
-                                                    {uniqueTags.map((vari, i) => {
-                                                        return (
-                                                            <li className={vari.color} key={i} title={vari.color} onClick={() => variantChangeByColor(vari.image_id, product.images)}></li>)
-                                                    })}
-                                                </ul> : ''}
-                                        </ul> : ''}
+                                        <Input type="select" name="Server" onChange={onChangeModalFactor} defaultValue={()=> {setModalServerDefault('')}}>
+                                            <option>Choose a server...</option>
+                                            {product.variants.map((server, i) => {
+                                                
+                                                return (<option key={i} value={server.name}>{server.name} x {server.factor}</option>)
+                                            })
+                                        }
+                                        </Input>: ''}
                                     <div className="border-product">
                                         <h6 className="product-title">product details</h6>
                                         <p>{product.description}</p>
@@ -212,7 +231,7 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
                                                 </span>
                                                 <input type="text" name="quantity" value={quantity} onChange={changeQty} className="form-control input-number" />
                                                 <span className="input-group-prepend">
-                                                    <button type="button" className="btn quantity-right-plus" onClick={() => plusQty(product)} data-type="plus" data-field="">
+                                                    <button type="button" className="btn quantity-right-plus" onClick={plusQty} data-type="plus" data-field="">
                                                         <i className="fa fa-angle-right"></i>
                                                     </button>
                                                 </span>
@@ -221,7 +240,7 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
                                     </div>
                                     <div className="product-buttons">
                                         <button className="btn btn-solid" onClick={() => addCart(product, quantity)} >add to cart</button>
-                                        <button className="btn btn-solid" onClick={clickProductDetail} >View detail</button>
+                                        {/* <button className="btn btn-solid" onClick={clickProductDetail} >View detail</button> */}
                                     </div>
                                 </div>
                             </Col>

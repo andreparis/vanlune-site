@@ -37,7 +37,7 @@ const CartProvider = (props) => {
       cartItems[index] = { ...item, ...item, qty: quantity, total:(item.price - (item.price * item.discount / 100)) * quantity };
       setCartItems([...cartItems])
     } else {
-      const product = { ...item, qty: quantity, total: (item.price - (item.price * item.discount / 100)) }
+      const product = { ...item, qty: quantity, total: (item.price - (item.price * item.discount / 100)) * quantity }
       setCartItems([...cartItems, product])
     }
   }
@@ -54,12 +54,8 @@ const CartProvider = (props) => {
     }
 }
 
-  const plusQty = (item) => {
-    if (item.stock >= quantity) {
-      setQuantity(quantity + 1)
-    } else {
-      setStock("Out of Stock !")
-    }
+  const plusQty = () => {
+    setQuantity(quantity + 1);
   }
 
    // Update Product Quantity

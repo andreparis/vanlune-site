@@ -15,7 +15,7 @@ const Breadcrubs = ({title ,parent ,subTitle}) => {
                     <Col sm="6">
                         <nav aria-label="breadcrumb" className="theme-breadcrumb">
                             <ol className="breadcrumb">
-                                <li className="breadcrumb-item"><a href="#">{parent}</a></li>
+                                <li className="breadcrumb-item"><a href="/">{parent}</a></li>
                                 <li className="breadcrumb-item" aria-current="page">{title}</li>
                                 {
                                     subTitle === undefined ?

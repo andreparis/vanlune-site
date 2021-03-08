@@ -284,11 +284,11 @@ button {
 
 section,
 .section-t-space {
-  padding-top: 70px;
+  padding-top: 30px;
 }
 
 .section-b-space {
-  padding-bottom: 70px;
+  padding-bottom: 30px;
 }
 
 .p-t-0 {
@@ -708,7 +708,7 @@ button {
   &.btn-green {
     background-image: linear-gradient(to right, var(--gradient1), var(--gradient2));
     border: none;
-    background-color: var(--theme-deafult);
+    background-color: #25d366;
 
     &:hover {
       background-color: var(--theme-deafult);
@@ -9101,7 +9101,7 @@ footer {
     22.theme setting box CSS start
 ==========================*/
 .color1 {
-  background: #ff4c3b;
+  background: #7740DD;
 }
 
 .color2 {
@@ -10897,14 +10897,14 @@ footer {
 
           i {
             font-size: 20px;
-            color: #ff4c3b;
+            color: #7740DD;
           }
 
           h6 {
             text-transform: uppercase;
             padding-top: 5px;
             font-weight: 600;
-            color: #ff4c3b;
+            color: #7740DD;
           }
         }
 
@@ -14174,7 +14174,7 @@ header {
 
     &.active {
       img {
-        border: 1px solid #ff4c3b;
+        border: 1px solid #7740DD;
       }
     }
   }
@@ -14189,7 +14189,7 @@ header {
 // .portfolio-section {
 //   .filter-button {
 //     &.active {
-//       background-color: #ff4c3b;
+//       background-color: #7740DD;
 //       color: #ffffff;
 //     }
 //   }
@@ -16223,6 +16223,25 @@ table {
 /*=====================
     17.4.Fashion-3 Demo CSS
 ==========================*/
+
+.wpp-float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+  font-size:30px;
+	box-shadow: 2px 2px 3px #999;
+  z-index:100;
+}
+
+.wpp-my-float{
+	margin-top:16px;
+}
 
 .box-layout-body {
   background-color: $grey-lighter;

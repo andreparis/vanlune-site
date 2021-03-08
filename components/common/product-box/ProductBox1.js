@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Row, Col, Media, Modal, ModalBody } from 'reactstrap';
+import { Row, Col, Media, Modal, ModalBody, Input } from 'reactstrap';
 import CartContext from '../../../helpers/cart';
 import { CurrencyContext } from '../../../helpers/Currency/CurrencyContext';
 
@@ -18,6 +18,7 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
 
     const [image, setImage] = useState('');
     const [modal, setModal] = useState(false);
+    const [modalServer, setModalServer] = useState('');
     const [modalCompare, setModalCompare] = useState(false);
     const toggleCompare = () => setModalCompare(!modalCompare);
     const toggle = () => setModal(!modal);
@@ -45,6 +46,23 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
         })
     }
 
+    const getFactorForItem = (variants) => {
+        console.log(modalServer);
+        for(let j = 0; j < variants.length; j++){
+            if (variants[j].name == modalServer) {
+                return variants[j].factor;
+            }
+        }
+
+        return 1.0
+    };
+
+    const onChangeModalFactor = (e) => {
+        console.log(e.target.value);
+        let server = e.target.value.split(' ')[0];
+        setModalServer(server);
+    };
+
     let RatingStars = []
     let rating = 5;
     for (var i = 0; i < rating; i++) {
@@ -66,12 +84,12 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
                         alt="" />
                 </div>
                 {backImage ?
-                    product.images[1] === 'undefined' ?
+                    product.images[0] === 'undefined' ?
                         'false'
                         :
                         <div className="back" onClick={clickProductDetail}>
                             <Media src={`${image ?
-                                image : product.images[1].src
+                                image : product.images[0].src
                                 }`}
                                 className="img-fluid m-auto"
                                 alt="" />
@@ -137,17 +155,13 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
             </div>
             <div className={`product-detail ${productDetail}`} >
                 <div>
-                {title !== 'Product style 4'?
-                    <div className="rating">
-                        {RatingStars}
-                    </div>: ''}
                     <h6>{product.title}</h6>
                     {des ?
                         <p>{product.description}</p>
                         : ''
                     }
                     <h4>{currency.symbol}{((product.price - (product.price * product.discount / 100))*currency.value).toFixed(2)}
-                        <del><span className="money">{currency.symbol}{(product.price * currency.value).toFixed(2) }</span></del>
+                        {product.sale ? <del><span className="money">{currency.symbol}{(product.price * currency.value).toFixed(2)}</span></del> : '' }
                     </h4>
 
                     {product.variants.map(vari => {
@@ -173,80 +187,69 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
 
                 </div>
             </div>
-            <Modal isOpen={modal} toggle={toggle} className="modal-lg quickview-modal" centered>
-                <ModalBody>
-                    <Row>
-                        <Col lg="6" xs="12">
-                            <div className="quick-view-img">
-                                <Media src={`${product.variants ?
-                                    image ? image : product.images[0].src
-                                    : product.images[0].src
-                                    }`} alt="" className="img-fluid" />
-                            </div>
-                        </Col>
-                        <Col lg="6" className="rtl-text">
-                            <div className="product-right">
-                                <h2> {product.title} </h2>
-                                <h3>{currency.symbol}{(product.price * currency.value).toFixed(2)}</h3>
-                                {product.variants ?
-                                    <ul className="color-variant">
-                                        {uniqueTags ?
-                                            <ul className="color-variant">
-                                                {
-                                                    product.type === 'jewellery' || product.type === 'nursery' || product.type === 'beauty' || product.type === 'electronics' || product.type === 'goggles' || product.type === 'watch' || product.type === 'pets' ?
-                                                        ''
-                                                        :
-                                                        <>
-                                                            {uniqueTags ?
-                                                                <ul className="color-variant">
-                                                                    {uniqueTags.map((vari, i) => {
-                                                                        return (
-                                                                            <li className={vari.color} key={i} title={vari.color} onClick={() => variantChangeByColor(vari.image_id, product.images)}></li>)
-                                                                    })}
-                                                                </ul> : ''}
-                                                        </>
-                                                }
-                                            </ul> : ''}
-                                    </ul> : ''}
-                                <div className="border-product">
-                                    <h6 className="product-title">product details</h6>
-                                    <p>{product.description}</p>
+            <Modal isOpen={modal} toggle={toggle} className="quickview-modal" size="lg" centered>
+                    <ModalBody>
+                        <Row>
+                            <Col lg="6" xs="12">
+                                <div className="quick-view-img">
+                                    <Media src={`${product.variants ?
+                                        image ? image : product.images[0].src
+                                        : product.images[0].src
+                                        }`} alt="" className="img-fluid" />
                                 </div>
-                                <div className="product-description border-product">
-                                    {product.size ?
-                                        <div className="size-box">
-                                            <ul>
-                                                {product.size.map((size, i) => {
-                                                    return <li key={i}><a href={null}>{size}</a></li>
-                                                })}
-                                            </ul>
-                                        </div> : ''}
-                                    <h6 className="product-title">quantity</h6>
-                                    <div className="qty-box">
-                                        <div className="input-group">
-                                            <span className="input-group-prepend">
-                                                <button type="button" className="btn quantity-left-minus" onClick={minusQty} data-type="minus" data-field="">
-                                                    <i className="fa fa-angle-left"></i>
-                                                </button>
-                                            </span>
-                                            <input type="text" name="quantity" value={quantity} onChange={changeQty} className="form-control input-number" />
-                                            <span className="input-group-prepend">
-                                                <button type="button" className="btn quantity-right-plus" onClick={() => plusQty(product)} data-type="plus" data-field="">
-                                                    <i className="fa fa-angle-right"></i>
-                                                </button>
-                                            </span>
+                            </Col>
+                            <Col lg="6" className="rtl-text">
+                                <div className="product-right">
+                                    <h2> {product.title} </h2>
+                                    <h3>{currency.symbol}{(product.price * currency.value * getFactorForItem(product.variants)).toFixed(2) }</h3>
+                                    {product.variants ?
+                                        <Input type="select" name="Server" onChange={onChangeModalFactor} defaultValue={()=> {setModalServerDefault('')}}>
+                                            <option>Choose a server...</option>
+                                            {product.variants.map((server, i) => {
+                                                
+                                                return (<option key={i} value={server.name}>{server.name} x {server.factor}</option>)
+                                            })
+                                        }
+                                        </Input>: ''}
+                                    <div className="border-product">
+                                        <h6 className="product-title">product details</h6>
+                                        <p>{product.description}</p>
+                                    </div>
+                                    <div className="product-description border-product">
+                                        {product.size ?
+                                            <div className="size-box">
+                                                <ul>
+                                                    {product.size.map((size, i) => {
+                                                        return <li key={i}><a href={null}>{size}</a></li>
+                                                    })}
+                                                </ul>
+                                            </div> : ''}
+                                        <h6 className="product-title">quantity</h6>
+                                        <div className="qty-box">
+                                            <div className="input-group">
+                                                <span className="input-group-prepend">
+                                                    <button type="button" className="btn quantity-left-minus" onClick={minusQty} data-type="minus" data-field="">
+                                                        <i className="fa fa-angle-left"></i>
+                                                    </button>
+                                                </span>
+                                                <input type="text" name="quantity" value={quantity} onChange={changeQty} className="form-control input-number" />
+                                                <span className="input-group-prepend">
+                                                    <button type="button" className="btn quantity-right-plus" onClick={plusQty} data-type="plus" data-field="">
+                                                        <i className="fa fa-angle-right"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className="product-buttons">
+                                        <button className="btn btn-solid" onClick={() => addCart(product, quantity)} >add to cart</button>
+                                        {/* <button className="btn btn-solid" onClick={clickProductDetail} >View detail</button> */}
+                                    </div>
                                 </div>
-                                <div className="product-buttons">
-                                    <button className="btn btn-solid" onClick={() => addCart(product)} >add to cart</button>
-                                    <button className="btn btn-solid" onClick={clickProductDetail} >View detail</button>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </ModalBody>
-            </Modal>
+                            </Col>
+                        </Row>
+                    </ModalBody>
+                </Modal>
         </div>
     )
 }

@@ -102,7 +102,7 @@ const ThemeSettings = () => {
                         <div className="setting-contant">
                             <ul className="color-box">
                                 <li>
-                                    <input id="colorPicker1" type="color" defaultValue="#ff4c3b"  name="Background" onChange={(e) => layoutColorFunc(e)}/>                                       
+                                    <input id="colorPicker1" type="color" defaultValue="#7740DD"  name="Background" onChange={(e) => layoutColorFunc(e)}/>                                       
                                 </li>
                                 <span className="ml-3">theme deafult color</span>
                             </ul>

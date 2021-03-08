@@ -33,14 +33,14 @@ const HeaderThree = (props) => {
     const handleScroll = () => {
         let number = window.pageXOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 
-        if (number >= 150) {
-            if (window.innerWidth < 576) {
-                document.getElementById("sticky").classList.remove('fixed');
-            } else
-                document.getElementById("sticky").classList.add('fixed');
-        } else {
-            document.getElementById("sticky").classList.remove('fixed');
-        }
+        // if (number >= 150) {
+        //     if (window.innerWidth < 576) {
+        //         document.getElementById("sticky").classList.remove('fixed');
+        //     } else
+        //         document.getElementById("sticky").classList.add('fixed');
+        // } else {
+        //     document.getElementById("sticky").classList.remove('fixed');
+        // }
     }
 
     // eslint-disable-next-line
@@ -109,15 +109,6 @@ const HeaderThree = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-                <Container>
-                    <Row>
-                        <Col lg="12">
-                            <div className="main-nav-center">
-                                <NavBar />
                             </div>
                         </Col>
                     </Row>

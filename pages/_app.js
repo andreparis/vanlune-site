@@ -6,6 +6,7 @@ import TapTop from '../components/common/widgets/Tap-Top';
 import MessengerCustomerChat from 'react-messenger-customer-chat';
 import { MenuContextProvider } from '../helpers/menu/MenuContext';
 import CartContextProvider from '../helpers/cart/CartContext';
+import LoginProvider from '../helpers/login/LoginContext';
 import { WishlistContextProvider } from '../helpers/wishlist/WishlistContext';
 import FilterProvider from '../helpers/filter/FilterProvider';
 import SettingProvider from '../helpers/theme-setting/SettingProvider';
@@ -22,7 +23,7 @@ export default function MyApp({ Component, pageProps }) {
     const path = window.location.pathname.split('/');
     const url = path[path.length - 1];
     setUrl(url);
-    document.body.classList.add('dark');
+    document.body.classList.add('light');
     setTimeout(function () {
       setIsLoading(false);      
     }, 1000);
@@ -52,25 +53,27 @@ export default function MyApp({ Component, pageProps }) {
             />
           <Helmet>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <title>Vanlune - Best ecommerce for Gamers</title>
+            <title>PLAYER2 - Best ecommerce for Gamers</title>
           </Helmet>
             <div>
               <SettingProvider>
-                <CompareContextProvider>
-                  <CurrencyContextProvider>
-                    <CartContextProvider>
-                      <WishlistContextProvider>
-                        <MenuContextProvider>
-                          <FilterProvider>
-                            <Component {...pageProps} />
-                          </FilterProvider>
-                        </MenuContextProvider>
-                      </WishlistContextProvider>
-                    </CartContextProvider>
-                  </CurrencyContextProvider>
-                  <ThemeSettings />
-                </CompareContextProvider>
-              </SettingProvider>
+                <LoginProvider>
+                  <CompareContextProvider>
+                    <CurrencyContextProvider>
+                      <CartContextProvider>
+                        <WishlistContextProvider>
+                          <MenuContextProvider>
+                            <FilterProvider>
+                              <Component {...pageProps} />
+                            </FilterProvider>
+                          </MenuContextProvider>
+                        </WishlistContextProvider>
+                      </CartContextProvider>
+                    </CurrencyContextProvider>
+                    {/* <ThemeSettings /> */}
+                  </CompareContextProvider>
+                  </LoginProvider>
+              </SettingProvider>             
               <ToastContainer />
               <TapTop />
             </div>

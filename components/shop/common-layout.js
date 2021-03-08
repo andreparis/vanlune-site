@@ -1,9 +1,10 @@
 import React from 'react';
-import HeaderThree from '../headers/header-three';
+import HeaderThree from '../headers/header-shop';
 import FooterFive from '../footers/footer-five';
 import Breadcrubs from '../common/widgets/breadcrubs';
 import Helmet from 'react-helmet';
 import favicon from '../../public/assets/images/favicon/1.png'
+import Category from '../../pages/portfolio/category'
 
 const CommonLayout = ({ children, title, parent ,subTitle }) => {
     return (
