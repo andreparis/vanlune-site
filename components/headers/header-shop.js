@@ -1,5 +1,4 @@
 import React, { useEffect , useState } from 'react';
-import NavBar from "./common/navbar-shop";
 import CartContainer from '../containers/CartContainer';
 import Currency from './common/currency';
 import TopBarDark from "./common/topbar-dark";
@@ -9,7 +8,7 @@ import search from '../../public/assets/images/icon/search.png';
 import settings from '../../public/assets/images/icon/setting.png';
 import cart from '../../public/assets/images/icon/cart.png';
 
-const HeaderThree = (props) => {
+const HeaderShop = (props) => {
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -139,4 +138,4 @@ const HeaderThree = (props) => {
     )
 }
 
-export default HeaderThree;
+export default HeaderShop;

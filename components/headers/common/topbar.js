@@ -17,12 +17,12 @@ const TopBar = ({topClass}) => {
                     <Col lg="6" className="text-right">
                         <ul className="header-dropdown">
                             <li className="mobile-wishlist compare-mobile">
-                                <Link href={`/page/compare`}>
+                                <Link href={`/account/compare.html`}>
                                     <a><i className="fa fa-random" aria-hidden="true"></i>{'compare'}</a>
                                 </Link>
                             </li>
                             <li className="mobile-wishlist">
-                                <Link href={`/page/account/wishlist`}>
+                                <Link href={`/account/wishlist.html`}>
                                     <a><i className="fa fa-heart" aria-hidden="true"></i>{('wishlist')}</a>
                                 </Link>
                             </li>
@@ -30,12 +30,12 @@ const TopBar = ({topClass}) => {
                                 <i className="fa fa-user" aria-hidden="true"></i> {('my_account')}
                                 <ul className="onhover-show-div">
                                     <li>
-                                        <Link href={`/page/account/login`} >
+                                        <Link href={`/account/login.html`} >
                                             <a>Login</a>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href={`/page/account/register`} >
+                                        <Link href={`/account/register.html`} >
                                             <a>Register</a>
                                         </Link>
                                     </li>

@@ -145,7 +145,7 @@ const ProductSection = ({ product, addToComapre, addWishlist, addCart }) => {
                                                         <span>successfully added to your Compare list</span>
                                                     </h5>
                                                     <div className="buttons d-flex justify-content-center">
-                                                        <Link href="/page/compare">
+                                                        <Link href="/account/compare.html">
                                                             <a href={null} className="btn-sm btn-solid" onClick={addToComapre}>
                                                                 View Compare list
                                                     </a>

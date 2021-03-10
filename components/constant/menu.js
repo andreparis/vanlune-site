@@ -1,21 +1,15 @@
 export const MENUITEMS = [
    {
-      title: 'Gold', type: 'link', path: '/shop?product=gold'
+      title: 'Gold', type: 'link', path: '/shop.html?product=gold'
    },
    {
-      title: 'PVP', type: 'link', path: '/shop?product=pvp'
+      title: 'PVP', type: 'link', path: '/shop.html?product=pvp'
    },
    {
-      title: 'Raid', type: 'link', path: '/shop?product=raid'
+      title: 'Raid', type: 'link', path: '/shop.html?product=raid'
    },
    {
-      title: 'Dungeon', type: 'link', path: '/shop?product=dungeon'
-   },
-   {
-      title: 'Leveling ', type: 'link', path: '/shop?product=leveling'
-   },
-   {
-      title: 'Transmog ', type: 'link', path: '/shop?product=transmog'
+      title: 'Mythic+', type: 'link', path: '/shop.html?product=mythic'
    }
 ]
 

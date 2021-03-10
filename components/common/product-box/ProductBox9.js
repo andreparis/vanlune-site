@@ -78,7 +78,7 @@ const ProductBox = ({ product, addCart, addWish, addCompare }) => {
                                         <span>successfully added to your Compare list</span>
                                     </h5>
                                     <div className="buttons d-flex justify-content-center">
-                                        <Link href="/page/compare">
+                                        <Link href="/account/compare.html">
                                             <a href={null} className="btn-sm btn-solid" onClick={addCompare}>
                                                 View Compare list
                                             </a>

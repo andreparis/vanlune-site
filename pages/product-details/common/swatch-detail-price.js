@@ -94,7 +94,7 @@ const SwatchDetailsWithPrice = (params) => {
                 </div>
                 <div className="product-buttons" >
                     <a href={null} className="btn btn-solid" onClick={() => addToCart(product,quantity)}>add to cart</a>
-                    <Link href={`/page/account/checkout`}  ><a className="btn btn-solid" onClick={() => BuynowClicked(item, quantity)}>buy now</a></Link>
+                    <Link href={`/account/checkout.html`}  ><a className="btn btn-solid" onClick={() => BuynowClicked(item, quantity)}>buy now</a></Link>
                 </div>
                 <div className="border-product">
                     <h6 className="product-title">product details</h6>

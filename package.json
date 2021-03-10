@@ -66,5 +66,11 @@
     "reactstrap": "^8.5.1",
     "sass": "^1.26.8",
     "url-loader": "^4.1.0"
+  },
+  "devDependencies": {
+    "envify": "^4.1.0",
+    "terser": "^5.6.0",
+    "terser-brunch": "^4.0.0",
+    "uglifyify": "^5.0.2"
   }
 }

@@ -2,7 +2,6 @@ import React, {useEffect, useState } from 'react';
 import CommonLayout from '../../components/shop/common-layout';
 import { Container, Row, Col } from 'reactstrap';
 import { useRouter } from 'next/router';
-import { withApollo } from '../../helpers/apollo/apollo';
 import axios from 'axios'
 
 const ConfirmPage = () => {
@@ -56,4 +55,4 @@ const ConfirmPage = () => {
     )
 }
 
-export default withApollo(ConfirmPage);
+export default ConfirmPage;

@@ -16,7 +16,7 @@ const CartContainer = ({icon}) => {
         <Fragment>
             <li className="onhover-div mobile-cart" >
                 <div className="cart-qty-cls">{cartList.length}</div>
-                <Link href={`/page/account/cart`}>
+                <Link href={`/account/cart.html`}>
                     <div>
                         <Media src={icon} className="img-fluid" alt="" />
                         <i className="fa fa-shopping-cart"></i>
@@ -35,10 +35,10 @@ const CartContainer = ({icon}) => {
                             </li>
                             <li>
                                 <div className="buttons view-cart">
-                                    <Link href={`/page/account/cart`} >
+                                    <Link href={`/account/cart.html`} >
                                         <a>view cart</a>
                                     </Link>
-                                    <Link href={`/page/account/checkout`} >
+                                    <Link href={`/account/checkout.html`} >
                                         <a className="checkout">checkout</a>
                                     </Link>
                                 </div>

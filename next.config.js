@@ -5,7 +5,7 @@ const nextConfig = {
   env: {
     API_URL: 'http://localhost:4000/graphql',
     PRODUCTS_URL: 'https://dz1vgymd2a.execute-api.us-east-1.amazonaws.com/Dev/products',
-    ORDERS_URL:'https://v7nff9zza1.execute-api.us-east-1.amazonaws.com/Dev/orders',
+    ORDERS_URL: 'https://1stpx2w2n3.execute-api.us-east-1.amazonaws.com/Dev/orders',
     ACCOUNT_URL:'https://kenqee79v2.execute-api.us-east-1.amazonaws.com/Dev/accounts'
   },
 

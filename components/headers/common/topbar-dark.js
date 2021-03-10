@@ -30,7 +30,7 @@ const TopBarDark = ({ topClass, fluid }) => {
                     <Col lg="6" className="text-right">
                         <ul className="header-dropdown">
                             <li className="mobile-wishlist">
-                                <Link href="/page/account/wishlist">
+                                <Link href="/account/wishlist.html">
                                     <a><i className="fa fa-heart" aria-hidden="true"></i> wishlist</a>
                                 </Link>
                             </li>
@@ -40,12 +40,12 @@ const TopBarDark = ({ topClass, fluid }) => {
                                     { !isLogged ?
                                     <>
                                         <li>
-                                            <Link href={`/page/account/login`}>
+                                            <Link href={`/account/login.html`}>
                                                 <a>Login</a>
                                             </Link>
                                         </li>
                                         <li>
-                                            <Link href={`/page/account/register`}>
+                                            <Link href={`/account/register.html`}>
                                                 <a>Register</a>
                                             </Link>
                                         </li>

@@ -4,8 +4,6 @@ import { Input, Container, Row, Form, Label ,Col, Spinner, Alert } from 'reactst
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { object } from 'prop-types';
-import { withApollo } from '../../helpers/apollo/apollo';
 
 const NewPasswordPage = () => {
     const router = useRouter();
@@ -81,7 +79,7 @@ const NewPasswordPage = () => {
                     }
                 else if (hasContent) {
                     alert(result.data.Content);
-                    //router.push('/page/account/login');
+                    //router.push('/account/login.html');
                 }
             })
             .catch(error => {
@@ -162,4 +160,4 @@ const NewPasswordPage = () => {
     )
 }
 
-export default withApollo(NewPasswordPage);
+export default NewPasswordPage;

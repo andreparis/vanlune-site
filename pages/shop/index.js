@@ -1,6 +1,5 @@
 import React from 'react';
 import CommonLayout from '../../components/shop/common-layout';
-import { withApollo } from '../../helpers/apollo/apollo';
 import { Row, Container } from 'reactstrap';
 import ProductList from './common/productList';
 
@@ -18,4 +17,4 @@ const ShopPage = () => {
     )
 }
 
-export default withApollo(ShopPage);
+export default ShopPage;
