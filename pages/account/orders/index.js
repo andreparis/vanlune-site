@@ -3,7 +3,12 @@ import CommonLayout from '../../../components/shop/common-layout';
 import LoginContext from '../../../helpers/login';
 import axios from 'axios';
 import {Router, useRouter} from 'next/router';
-import { Spinner, Container, Row, Col, Table } from 'reactstrap';
+import { Spinner, 
+    Container, 
+    Row, 
+    Col, 
+    Table } from 'reactstrap';
+ import ReactPaginate from 'react-paginate';
 
 const Order = () => {
     const loginContext = useContext(LoginContext);
@@ -11,32 +16,99 @@ const Order = () => {
     const router = useRouter();
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [state, setState] = useState({ currentPage: 0, offset: 1, perPage: 5});
 
     useEffect(() => {
-        // if (loginContext.state.status == 1)
-        //     router.push('/');
-        async function fetchOrder () {
-            setIsLoading(true);
+        getOrder();
+    }, []);
 
-            try {
-                console.log(user);                
-                console.log('id = '+ user.id);
-                let result = await axios
-                .get(process.env.ORDERS_URL + "/user?user=5", 
-                    { headers: {
-                            AuthorizationToken: loginContext.state.token
-                        }
-                    });
+    useEffect(() => {
+        handlePageClick({
+            selected: 0
+        });
+    }, [orders]);
+    
+    const getOrder = () => {
+        setIsLoading(true);
+        try {
+            axios.get(process.env.ORDERS_URL + "/user?user=5", 
+            { headers: {
+                    AuthorizationToken: loginContext.state.token
+                }
+            }).then ((result) => {
                 if (result.status != 200)
-                    throw "";
-                console.log(result.data);
+                    throw "error in network";
                 setOrders(result.data.Content);
-            }
-            catch (error){ console.log(error) }
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                getOrder();
+            });
+        }
+        catch (error) { 
             setIsLoading(false);
-        };
-        fetchOrder();
-    }, [user]);
+            getOrder();
+            console.log(error);
+        }
+    }
+
+    const handlePageClick = (e) => {
+        if (orders.length == 0)
+            return;
+        console.log("handlePageClick");
+        console.log(e);
+        console.log(orders);
+        const selectedPage = e.selected;
+        const offset = selectedPage * state.perPage;
+        console.log("offset = "+ offset + "; state.perPage = "+ state.perPage);
+        const slice = orders.slice(offset, offset + state.perPage);
+        console.log(slice);
+        const postData = items(slice);
+        setState({
+            perPage: 5,
+            currentPage: selectedPage,
+            offset: offset,
+            pageCount: Math.ceil(orders.length / state.perPage),
+            postData
+        });
+    };
+
+    const items = (products) => {
+        return products.map((item, i) => 
+            <tbody key={i}>
+                <tr>
+                    <td>
+                        <p>{item.id}</p>
+                    </td>
+                    <td> {item.product.title} </td>
+                    <td>
+                        <p>{item.quantity}</p>
+                    </td>
+                    <td >
+                        <p>{item.price}</p>
+                    </td>
+                    <td>
+                        <p>{item.variant.name + " - " + item.variant.factor}</p>
+                    </td>
+                    <td>
+                        <p>{item.amount}</p>
+                    </td>
+                    <td> {item.status == 1?
+                            <p style={{color: "orange"}}><b>In progress</b></p> :
+                            item.status == 2?
+                            <p style={{color: "green"}}><b>Completed</b></p> :
+                            <p style={{color: "red"}}><b>Canceled</b></p>
+                        }                                                    
+                    </td>
+                </tr>
+            </tbody>);
+    }
+
+    const TableFragment = () => (
+        <>
+            { orders.length > 0 ? state.postData : '' }
+        </>
+    )
 
     const ShowLoading = () => ( 
         <Spinner cstyle={{ width: '3rem', height: '3rem' }} type="grow" color="dark"/>
@@ -62,36 +134,20 @@ const Order = () => {
                                             <th scope="col">status</th>
                                         </tr>
                                     </thead>
-                                    {orders.map((item, i) =>
-                                        <tbody key={i}>
-                                            <tr>
-                                                <td>
-                                                    <p>{item.id}</p>
-                                                </td>
-                                                <td> {item.product.title} </td>
-                                                <td>
-                                                    <p>{item.quantity}</p>
-                                                </td>
-                                                <td>
-                                                    <p>{item.price}</p>
-                                                </td>
-                                                <td>
-                                                    <p>{item.variant.name + " - " + item.variant.factor}</p>
-                                                </td>
-                                                <td>
-                                                    <p>{item.amount}</p>
-                                                </td>
-                                                <td> {item.status == 1?
-                                                        <p style={{color: "orange"}}><b>In progress</b></p> :
-                                                        item.status == 2?
-                                                        <p style={{color: "green"}}><b>Completed</b></p> :
-                                                        <p style={{color: "red"}}><b>Canceled</b></p>
-                                                    }                                                    
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    )}
+                                    <TableFragment />                                   
                                 </Table>
+                                <ReactPaginate
+                                        previousLabel={"prev"}
+                                        nextLabel={"next"}
+                                        breakLabel={"..."}
+                                        breakClassName={"break-me"}
+                                        pageCount={state.pageCount}
+                                        marginPagesDisplayed={2}
+                                        pageRangeDisplayed={5}
+                                        onPageChange={handlePageClick}
+                                        containerClassName={"pagination"}
+                                        subContainerClassName={"pages pagination"}
+                                        activeClassName={"active"}/>
                             </Col>
                         </Row>
                     </Container>
