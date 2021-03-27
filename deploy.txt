@@ -1,0 +1,2 @@
+Get-ChildItem -File -Recurse | % { Rename-Item -Path $_.PSPath -NewName $_.Name.replace(".html","")}
+aws s3 sync . s3://player272b302bf297a228a75730123efef7c41 --content-type "text/html"

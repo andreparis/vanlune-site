@@ -2,6 +2,7 @@ import React, { useContext, Fragment } from 'react';
 import Link from 'next/link';
 import CartHeader from '../headers/common/cart-header';
 import CartContext from '../../helpers/cart';
+import { useRouter } from 'next/router';
 import { Media } from 'reactstrap';
 import { CurrencyContext } from '../../helpers/Currency/CurrencyContext';
 
@@ -11,12 +12,13 @@ const CartContainer = ({icon}) => {
     const symbol = currContext.state.symbol;
     const cartList = context.state;
     const total = context.cartTotal;
+    const router = useRouter();
 
     return (
         <Fragment>
             <li className="onhover-div mobile-cart" >
                 <div className="cart-qty-cls">{cartList.length}</div>
-                <Link href={`/account/cart.html`}>
+                <Link href={`/account/cart`}>
                     <div>
                         <Media src={icon} className="img-fluid" alt="" />
                         <i className="fa fa-shopping-cart"></i>
@@ -35,10 +37,10 @@ const CartContainer = ({icon}) => {
                             </li>
                             <li>
                                 <div className="buttons view-cart">
-                                    <Link href={`/account/cart.html`} >
+                                    <Link href={`/account/cart`} >
                                         <a>view cart</a>
                                     </Link>
-                                    <Link href={`/account/checkout.html`} >
+                                    <Link href={`/account/checkout`} >
                                         <a className="checkout">checkout</a>
                                     </Link>
                                 </div>

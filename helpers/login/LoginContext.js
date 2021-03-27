@@ -1,58 +1,99 @@
 import React, { useState, useEffect } from 'react';
 import Context from './index';
-import { toast } from 'react-toastify'
+import Cookie from "js-cookie";
+import Router from "next/router";
+import jwt_decode from "jwt-decode";
+import {goHome} from '../../services/game';
+
+export const TOKEN_STORAGE_KEY = "player2.authToken";
+export const USER_STORAGE_KEY = "player2.userInfo";
+
 const LoginProvider = (props) => {
-  const [authorizationToken, setToken] = useState({token: '', status: 1});
+  const [authorizationToken, setToken] = useState({token: ''});
   const [user, setUser] = useState({});
 
-  const cookieToken = localStorage.getItem('token');
-  const userStorage = localStorage.getItem('info');
+  useEffect(() => {
+    let cookieToken = Cookie.get(TOKEN_STORAGE_KEY);
+    let userstr = Cookie.get(USER_STORAGE_KEY);
 
-  const logIn = (user, token) => {
+    setToken({token: cookieToken});
+    if (userstr) setUser(JSON.parse(userstr));
+
+  }, []);
+
+  const logIn = (user, token) => {    
     user = keysToLowerCase(user);
-    token = keysToLowerCase(token);
-    // save the token from the login response in a cookie
-    localStorage.setItem('token', JSON.stringify(token), { expires: 1 })
-    // save the userId from the login response in a cookie
-    localStorage.setItem('info', JSON.stringify(user), { expires: 1 })
+
+    Cookie.set(TOKEN_STORAGE_KEY, token.token);
+    Cookie.set(USER_STORAGE_KEY, JSON.stringify(user));
+
     setUser(user);
     setToken(token);
-  }
 
-  useEffect(() => {
-    localStorage.setItem('info', JSON.stringify(user), { expires: 1 });
-  },[user]);
-
- useEffect(() => {
-    if (cookieToken) setToken(JSON.parse(cookieToken));
-    if (userStorage) setUser(JSON.parse(userStorage));
-  }, [])
-
-  useEffect(() => {
-      if (authorizationToken != undefined &&
-        authorizationToken.status == 0)
-        {
-            toast.success("Loggin success!");
-        }
-        localStorage.setItem('token', JSON.stringify(authorizationToken), { expires: 1 });
-  }, [authorizationToken]);
+    goHome();
+  };
 
   const logOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('info');
-    setToken({token: '', status: 1});
+    Cookie.remove(TOKEN_STORAGE_KEY);
+    Cookie.remove(USER_STORAGE_KEY);
+    setToken({token: ''});
     setUser({});
+
+    Router.push('/account/login');
+  }
+
+  const getUser = () => {
+    let user = Cookie.get(USER_STORAGE_KEY);
+    let obj = JSON.parse(user);
+    setUser(obj);
+
+    return obj;
+  };
+
+  const getDecodedToken = () => {
+    let cookieToken = Cookie.get(TOKEN_STORAGE_KEY);
+    if (cookieToken)
+      return jwt_decode(cookieToken);
+
+    return {exp: 0};
+  };
+
+  const getAuthToken = () => {
+    let user = getUser();
+    let cookieToken = Cookie.get(TOKEN_STORAGE_KEY);
+
+    return cookieToken + user['id'];
+  }
+
+  const expiresAt = () => {
+    let decodedToken = getDecodedToken();
+
+    return new Date(decodedToken.exp * 1000);
+  }
+
+  const isExpired = () => {
+    let date = new Date();
+    return date > expiresAt();
+  }
+
+  const isValid = () =>  {
+    return !isExpired();
   }
 
   const { value } = props;
+
   return (
     <Context.Provider
       value={{
         ...props,
         state: authorizationToken,
         userState: user, setUser,
+        decodedToken: getDecodedToken,
         logIn: logIn,
-        logOut: logOut
+        logOut: logOut,
+        isValid: isValid,
+        getUser: getUser,
+        getAuthToken: getAuthToken
       }}
     >
       {props.children}

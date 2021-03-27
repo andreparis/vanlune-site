@@ -1,7 +1,7 @@
 import React from 'react';
 import CommonLayout from '../../components/shop/common-layout';
 import { Row, Container } from 'reactstrap';
-import ProductList from './common/productList';
+import ProductList from '../../components/common/productList';
 
 const ShopPage = () => {
     return (

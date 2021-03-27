@@ -15,7 +15,7 @@ const WishlistPage = () => {
     const addCart = cartContext.addToCart;
 
     const checkOut = () => {
-        router.push('/account/checkout.html');
+        router.push('/account/checkout?game='+router.query.game);
     }
 
     return (

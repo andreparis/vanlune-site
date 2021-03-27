@@ -1,13 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import { Media } from 'reactstrap';
 import language from '../../constant/langConfig.json';
 import i18next from '../../constant/i18n';
 import { CurrencyContext } from '../../../helpers/Currency/CurrencyContext';
-import { withApollo } from '../../../helpers/apollo/apollo';
 import axios from 'axios';
-
 
 
 const Currency = ({icon}) => {
@@ -20,36 +16,46 @@ const Currency = ({icon}) => {
     };
 
     useEffect(() => {
-        async function getCurrencies() {
-            await axios
-            .get('https://economia.awesomeapi.com.br/all/BRL-USD')
-            .then(function (result) {
-                if (result.status != 200)
-                    throw "";
-                console.log(result);
-                var currencies = [];
-                let currency = result.data['BRL'];
-                currencies.push({
-                    symbol: '$',
-                    currency: currency.codein,
-                    value: currency.high
-                });
-                currencies.push({
-                    symbol: 'R$',
-                    currency: 'BRL',
-                    value: 1
-                });
-                setData(currencies);
-
-                return currencies;
-            })
-            .catch(function(error) {
-                console.log(error);
+        let localData = localStorage.getItem('currency');
+        if (localData == [] ||
+            localData == null) {
+            getCurrencies()
+            .then((result) => {
+                localStorage.setItem('currency',  JSON.stringify(result));
+                setData(result);
             });
-        };
-        getCurrencies();
+        }
+        else {
+            setData(JSON.parse(localData));
+        }
     }, []);
 
+    const getCurrencies = async () => {
+        return await axios
+        .get('https://economia.awesomeapi.com.br/all/BRL-USD')
+        .then(function (result) {
+            if (result.status != 200)
+                throw "";
+            var currencies = [];
+            let currency = result.data['BRL'];
+            currencies.push({
+                symbol: '$',
+                currency: currency.codein,
+                value: currency.high
+            });
+            currencies.push({
+                symbol: 'R$',
+                currency: 'BRL',
+                value: 1
+            });
+            return currencies;
+        })
+        .catch(function(error) {
+            console.log(error);
+
+            return  [];
+        });
+    }
     
 
     return (
@@ -75,4 +81,4 @@ const Currency = ({icon}) => {
     )
 }
 
-export default withApollo(Currency);
+export default Currency;

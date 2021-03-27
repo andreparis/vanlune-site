@@ -13,6 +13,21 @@ const Register = () => {
     const [alertText, setAlertText] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, errors } = useForm(); // initialise the hook
+    const [defaultValues, setDefaultValues] = useState({});
+
+    useEffect(() => {
+        let defaultValues = {};
+        if (router.query.email)
+            defaultValues['email'] = router.query.email;
+        if (router.query.name)
+            defaultValues['name'] = decodeURI(router.query.name);
+        setDefaultValues(defaultValues);
+    }, []);
+
+    useEffect(() => {
+        if (alertText.length > 0)
+            setVisible(true);
+    },[alertText]);
 
     const onSubmit = data => {
         let text = [];        
@@ -59,7 +74,7 @@ const Register = () => {
                     }
                 else if (hasContent) {
                     alert(result.data.Content);
-                    router.push('/account/login.html');
+                    router.push('/account/login');
                 }
             })
             .catch(error => {
@@ -73,11 +88,6 @@ const Register = () => {
         setIsLoading(false);
     }
 
-    useEffect(() => {
-        if (alertText.length > 0)
-            setVisible(true);
-    },[alertText]);
-    
     const AlertComponent = () => (
         <Alert color="danger" isOpen={visible} toggle={onDismiss}>
           {alertText.map((text, i) => {
@@ -109,20 +119,25 @@ const Register = () => {
                                             
                                             <Label for="first_name">First Name <br/></Label> 
                                             <span className="error-message">{errors.first_name && '  Required'} <br/></span>                                           
-                                            <Input type="text" className={`${errors.first_name?'error_border':''}`} name="first_name" id="first_name" placeholder="First Name" innerRef={register({ required: true })}/>
-                                            
+                                            {defaultValues['name'] ?
+                                                <Input type="text" defaultValue={String(defaultValues['name']).split(' ')[0]} className={`${errors.first_name?'error_border':''}`} name="first_name" id="first_name" placeholder="First Name" innerRef={register({ required: true })}/>
+                                            :   <Input type="text" className={`${errors.first_name?'error_border':''}`} name="first_name" id="first_name" placeholder="First Name" innerRef={register({ required: true })}/>}
                                         </Col>
                                         <Col md="6">
                                             <Label for="last_name">Last Name</Label>
                                             <span className="error-message">{errors.last_name && '  Required'}</span>
-                                            <Input type="text" className={`${errors.last_name?'error_border':''}`} name="last_name" placeholder="Last Name" innerRef={register({ required: true })}/>
+                                            {defaultValues['name'] ?
+                                            <Input type="text" defaultValue={String(defaultValues['name']).split(' ')[1]} className={`${errors.last_name?'error_border':''}`} name="last_name" placeholder="Last Name" innerRef={register({ required: true })}/>
+                                            : <Input type="text" className={`${errors.last_name?'error_border':''}`} name="last_name" placeholder="Last Name" innerRef={register({ required: true })}/>}
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col md="6">                                            
                                             <Label for="email">Email</Label>
                                             <span className="error-message">{errors.email && '  Please enter proper email address'}</span>
-                                            <Input type="text" className={`${errors.email?'error_border':''}`} name= "email" id="email" placeholder="Email" innerRef={register({ required: true, pattern: /^\S+@\S+$/i })}/>                                            
+                                            {defaultValues['email'] ? 
+                                                <Input type="text" defaultValue={String(defaultValues['email'])} className={`${errors.email?'error_border':''}`} name= "email" id="email" placeholder="Email" innerRef={register({ required: true, pattern: /^\S+@\S+$/i })}/>
+                                            :   <Input type="text" className={`${errors.email?'error_border':''}`} name= "email" id="email" placeholder="Email" innerRef={register({ required: true, pattern: /^\S+@\S+$/i })}/>}                                            
                                         </Col>
                                         <Col md="6">                                            
                                             <Label for="country">Country</Label>

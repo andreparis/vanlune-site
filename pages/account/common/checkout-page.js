@@ -16,7 +16,8 @@ const CheckoutPage = () => {
     const cartContext = useContext(CartContext);
     const cartItems = cartContext.state;
     const curContext = useContext(CurrencyContext);
-    const symbol = curContext.state.symbol
+    const symbol = curContext.state.symbol;
+    const currency = curContext.state.currency;
     const [editForm, setEditForm] = useState(false);
     const [payment, setPayment] = useState('stripe');
     const { register, handleSubmit, errors } = useForm(); // initialise the hook
@@ -29,17 +30,18 @@ const CheckoutPage = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        let name = loginContext.userState.name != undefined ? 
-                (loginContext.userState.name + "").split(' ') : 
+        let user = loginContext.userState;
+        let name = user.name != undefined ? 
+                (user.name + "").split(' ') : 
                 ['', ''];
         setObj({
             first_name: name[0],
             last_name: name[1],
             char_name: '',
             wowServer: '',
-            phone: loginContext.userState.phone,
-            country: loginContext.userState.country,
-            email: loginContext.userState.email
+            phone: user.phone,
+            country: user.country,
+            email: user.email
         });
     }, []);
 
@@ -58,52 +60,7 @@ const CheckoutPage = () => {
             }
         }
         setServer(vars);
-    }, [cartItems])
-
-    useEffect(() => {
-        setCartTotalValue(wowServer);    
-    }, [wowServer])
-
-    const onSelectServer = (event) => {
-        setWowServer(event.target.value);
-    };
-
-    const getFactForItem = (variants) => {
-        for(let j = 0; j < variants.length; j++){
-            if (variants[j].name == wowServer) {
-                return variants[j].factor;
-            }
-        }
-    }; 
-
-    const getVariantForItem = (variants) => {
-        for(let j = 0; j < variants.length; j++){
-            if (variants[j].name == wowServer) {
-                return variants[j];
-            }
-        }
-    }
-
-    const setCartTotalValue = (server) => {
-        if (wowServer == undefined || 
-            wowServer == '') {
-                setCartTotal(cartContext.cartTotal);
-                return;
-            }
-        let total = 0;
-        for(var i = 0.; i < cartItems.length; i++) {
-            let variants = cartItems[i].variants;
-            let price = cartItems[i].price;
-            let qdty = cartItems[i].qty;
-            
-            for(let j = 0; j < variants.length; j++){
-                if(variants[j].name == server) {
-                    total += (price * qdty * variants[j].factor)
-                }
-            }
-        }
-        setCartTotal(Math.round((total + Number.EPSILON) * 100) / 100);  
-    };
+    }, [cartItems]);
 
     const checkhandle = (value) => {
         setPayment(value)
@@ -111,11 +68,11 @@ const CheckoutPage = () => {
 
     const onSuccess = (payment) => {
         router.push({
-            pathname: '/account/order-success.html',
+            pathname: '/account/order-success'+"?game="+router.query.game,
             state: { payment: payment, items: cartItems, orderTotal: total, symbol: symbol }
         })
 
-    }
+    }    
 
     const onSubmit = data => {
         if (data == '' || data == undefined) {
@@ -129,7 +86,7 @@ const CheckoutPage = () => {
             char.server = data.wowServer;
 
             var user = new Object();
-            user.id = loginContext.userState.id;
+            user = loginContext.userState;
 
             var orders = new Object();
             orders.orders = [];
@@ -140,8 +97,9 @@ const CheckoutPage = () => {
                 order.product = cartItems[i];
                 order.price = order.product.price;
                 order.quantity = order.product.qty;
-                order.variant = getVariantForItem(order.product.variants);
-                order.amount = order.price * order.quantity * order.variant.factor;
+                order.variant = order.product.variants[0];
+                order.customizes = order.product.customizes;
+                order.amount = cartItems[i].total;
                 order.payment = 1;
 
                 console.log(order);
@@ -150,35 +108,46 @@ const CheckoutPage = () => {
             }
             postAxios(JSON.stringify(orders))
             .then(() => {
-                alert('Order submited success!');
-                //router.push("https://wa.me/+5527996609851?text="+whatsappText());
+                router.push("https://wa.me/+5527996609851?text="+whatsappText());
             }); 
-        } catch { }
+        } catch { alert('Something got wrong!'); }
     }; 
 
     const whatsappText = () => {
         var text = "PLAYER2,\n\nPlayer 1, "+obj.first_name+" ("+obj.char_name+"), needs you! \n\n*Requested items*:";
-        text += "\n\n*PRODUCT*       |    *PRICE*     ";
+        text += "\n\n    *PRODUCT*    |    *PRICE*    |    *SERVER*    |    *EXTRAS*";
         for(let i = 0; i < cartItems.length; i++) {
-            text+="\n"+cartItems[i].title+"  |  "+cartItems[i].price
+            text+="\n"+cartItems[i].title+"  |    "+cartItems[i].price + "    |    "+cartItems[i].variants[0]['name']+"    |     "+getExtrasAsString(cartItems[i]['customizes'])
         }
-        text += "\n\n*Server*: "+wowServer+" with factor "+getFactForItem(cartItems[0].variants)
         text += "\n\n*Total*: R$ "+ cartTotal;
 
         return window.encodeURIComponent(text);
     };
+
+    const getExtrasAsString = (extras) => {
+        var text = '';
+        for(var i = 0; i < extras.length; i++) {
+            text += extra['name']+": "+extra['value'][0]['name']+';'
+        }
+        return text;
+    }
     
     const postAxios = async (payload) => {
         try {
-            let result = await axios.post(process.env.ORDERS_URL, payload);
+            let token = loginContext.getAuthToken();
+            let result = await axios
+            .post(process.env.ORDERS_URL, payload, { 
+                headers: {
+                    AuthorizationToken: token,
+                }   
+        });
             let data = result.data;
             console.log(data);    
             
             alert('Order submited success!');           
         } catch (e) {
             console.log(e);
-
-            alert('Something got wrong!');
+            throw e;
         }
     }
 
@@ -214,11 +183,12 @@ const CheckoutPage = () => {
             payload.isActive = false;
             setIsLoading(true);
             try {
+                let token = loginContext.getAuthToken();
                 await axios
                 .put(process.env.ACCOUNT_URL,  
                     JSON.stringify(payload), {
                         headers: {
-                            AuthorizationToken: loginContext.state.token
+                            AuthorizationToken: token
                         }
                     })
                 .then(function(result) {
@@ -243,7 +213,7 @@ const CheckoutPage = () => {
     }
 
     const InputComponent = (value = "") => {   
-        return (<input type="text" value={value.name} />);
+        return (<input type="text" defaultValue={value.name} />);
     }
 
     const ShowLoading = () => ( 
@@ -267,18 +237,6 @@ const CheckoutPage = () => {
                                             <input type="text" className={`${errors.char_name?'error_border':''}`} name="char_name" ref={register({ required: true })} />
                                             <span className="error-message">{errors.char_name && 'Character name is required'}</span>
                                            
-                                        </div>
-                                        <div className="form-group col-md-6 col-sm-6 col-xs-12">
-                                            <div className="field-label">WoW Server</div>
-                                            <select name="wowServer" onChange={onSelectServer}  className={`${errors.wowServer?'error_border':''}`} ref={register({ required: true })}>
-                                                {servers ?
-                                                    servers.map((server, i) => {
-                                                        return (<option key={i} value={server}>{server}</option>)
-                                                    })
-                                                    : ''
-                                                }                                            
-                                            </select>
-                                            <span className="error-message">{errors.wowServer && 'WoW Server is required'}</span>
                                         </div>
                                         <div className="form-group col-md-6 col-sm-6 col-xs-12">
                                             <div className="field-label">Your First Name</div>
@@ -347,8 +305,7 @@ const CheckoutPage = () => {
                                                 </div>
                                                 <ul className="qty">
                                                     {cartItems.map((item, index) =>
-
-                                                        <li key={index}>{item.title} × {item.qty} <span>{symbol}{Math.round((item.total*getFactForItem(item.variants) + Number.EPSILON) * 100) / 100}</span><span>{getFactForItem(item.variants)}</span></li>
+                                                        <li key={index}>{item.title} × {item.qty} <span>{symbol}{item.total}</span><span>{item.variants[0]['name']}</span></li>
                                                     )}
                                                 </ul>
                                                 <ul className="sub-total">
@@ -368,7 +325,7 @@ const CheckoutPage = () => {
                                                             Order & Whatsapp
                                                         </button> :
                                                         
-                                                        <PaypalExpressBtn env={'sandbox'} client={client} currency={'USD'} total={cartTotal} onError={onError} onSuccess={onSuccess} onCancel={onCancel} />}
+                                                        <PaypalExpressBtn env={'sandbox'} client={client} currency={currency} total={cartTotal} onError={onError} onSuccess={onSuccess} onCancel={onCancel} />}
                                                     </div>
                                                     : ''}
                                             </div>

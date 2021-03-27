@@ -18,6 +18,15 @@ body {
         }
       }
     }
+
+    @media (max-width: 1630px) {
+      .image-bg-full {
+        .image {
+          width: 400px;
+          height: 400px;
+        }
+      }
+    }
   }
 }
 

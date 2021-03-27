@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import CommonLayout from '../../../components/shop/common-layout';
 import CheckoutPage from '../common/checkout-page';
 import Login from '../login'
@@ -6,7 +6,14 @@ import LoginContext from '../../../helpers/login';
 
 const Checkout = () => {
     const loginContext = useContext(LoginContext);
-    const isLogged = loginContext.state.status == 0;
+    const [isLogged, setIsLogged] = useState(false);
+
+    useEffect(() => {
+        console.log(loginContext.isValid());
+
+        setIsLogged(loginContext.isValid());
+    }, []);
+
 
     return (
         <>

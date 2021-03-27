@@ -2,23 +2,18 @@ import React, {useState, useEffect, useContext} from 'react';
 import CommonLayout from '../../../components/shop/common-layout';
 import LoginContext from '../../../helpers/login';
 import axios from 'axios';
-import {Router, useRouter} from 'next/router';
-import { Spinner, 
-    Container, 
-    Row, 
-    Col, 
-    Table } from 'reactstrap';
- import ReactPaginate from 'react-paginate';
+import { Spinner, Container, Row, Col, Table } from 'reactstrap';
+import ReactPaginate from 'react-paginate';
 
 const Order = () => {
     const loginContext = useContext(LoginContext);
-    const [user, setUser] = useState(loginContext.userState);
-    const router = useRouter();
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [state, setState] = useState({ currentPage: 0, offset: 1, perPage: 5});
 
     useEffect(() => {
+        if (!loginContext.isValid())
+            loginContext.logOut();
         getOrder();
     }, []);
 
@@ -29,11 +24,15 @@ const Order = () => {
     }, [orders]);
     
     const getOrder = () => {
-        setIsLoading(true);
+        setIsLoading(true);        
         try {
-            axios.get(process.env.ORDERS_URL + "/user?user=5", 
-            { headers: {
-                    AuthorizationToken: loginContext.state.token
+            let user = loginContext.getUser();
+            let userId = user['id'];
+            let token = loginContext.getAuthToken();
+            axios.get(process.env.ORDERS_URL + "/user?user="+userId, 
+            { 
+                headers: {
+                    AuthorizationToken: token,
                 }
             }).then ((result) => {
                 if (result.status != 200)
@@ -94,10 +93,12 @@ const Order = () => {
                         <p>{item.amount}</p>
                     </td>
                     <td> {item.status == 1?
-                            <p style={{color: "orange"}}><b>In progress</b></p> :
+                            <p style={{color: "orange"}}><b>In Service</b></p> :
                             item.status == 2?
-                            <p style={{color: "green"}}><b>Completed</b></p> :
-                            <p style={{color: "red"}}><b>Canceled</b></p>
+                            <p style={{color: "green"}}><b>Delivered</b></p> :
+                            item.status == 3?
+                            <p style={{color: "red"}}><b>Canceled</b></p> :
+                            <p style={{color: "black"}}><b>Waiting for Service</b></p>
                         }                                                    
                     </td>
                 </tr>

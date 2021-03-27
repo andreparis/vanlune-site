@@ -2,7 +2,8 @@ import React, {useEffect, useState } from 'react';
 import CommonLayout from '../../components/shop/common-layout';
 import { Container, Row, Col } from 'reactstrap';
 import { useRouter } from 'next/router';
-import axios from 'axios'
+import axios from 'axios';
+import {goHome} from '../../services/game';
 
 const ConfirmPage = () => {
     const router = useRouter();
@@ -30,7 +31,9 @@ const ConfirmPage = () => {
         fetchData();        
     }, []);
 
-
+    const handleClick = () => {
+        goHome();
+    };
 
     return (
         <CommonLayout title="ConfirmPage" parent="home" >
@@ -45,7 +48,7 @@ const ConfirmPage = () => {
                                 <h1>Wait</h1>
                                 }
                                 
-                                <a href="/" className="btn btn-solid">back to home</a>
+                                <a href="" onClick={handleClick} className="btn btn-solid">back to home</a>
                             </div>
                         </Col>
                     </Row>

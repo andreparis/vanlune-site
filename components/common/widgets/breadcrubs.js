@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row ,Col } from 'reactstrap';
+import {getHome} from '../../../services/game';
 
 const Breadcrubs = ({title ,parent ,subTitle}) => {
+    const [home, setHome] = useState('/');
+
+    useEffect(()=>{
+        setHome(getHome());
+    }, []);
 
     return (
         <div className="breadcrumb-section">
@@ -15,7 +21,7 @@ const Breadcrubs = ({title ,parent ,subTitle}) => {
                     <Col sm="6">
                         <nav aria-label="breadcrumb" className="theme-breadcrumb">
                             <ol className="breadcrumb">
-                                <li className="breadcrumb-item"><a href="/">{parent}</a></li>
+                               {home ? <li className="breadcrumb-item"><a href={home} >{parent}</a></li> : ''}
                                 <li className="breadcrumb-item" aria-current="page">{title}</li>
                                 {
                                     subTitle === undefined ?
