@@ -79,7 +79,7 @@ const NewPasswordPage = () => {
                     }
                 else if (hasContent) {
                     alert(result.data.Content);
-                    //router.push('/account/login.html');
+                    router.push('/account/login');
                 }
             })
             .catch(error => {

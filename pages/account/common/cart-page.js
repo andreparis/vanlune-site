@@ -26,6 +26,21 @@ const CartPage = () => {
         }
     }
 
+    const getProductPrice = (product) => {
+        if (product == undefined)
+            return 0;
+        var total = product.price;
+        if (product['variants'][0]['factor'])
+            total *= product['variants'][0]['factor'];
+        if (product['customizes'] && product['customizes'].length > 0) {
+            for (var i = 0; i < product['customizes'].length; i ++) {
+            let customize = product['customizes'][i]['value'][0];
+            total *= customize['factor'];
+            }
+        }
+        return total.toFixed(2);
+    }
+
 
     const changeQty = (e) => {
         setQuantity(parseInt(e.target.value));
@@ -59,7 +74,8 @@ const CartPage = () => {
                                         <tr className="table-head">
                                             <th scope="col">image</th>
                                             <th scope="col">product name</th>
-                                            <th scope="col">price</th>
+                                            <th scope="col">price w/ options</th>
+                                            <th scope="col">discount</th>
                                             <th scope="col">quantity</th>
                                             <th scope="col">action</th>
                                             <th scope="col">total</th>
@@ -110,20 +126,20 @@ const CartPage = () => {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td><h2>{symbol}{item.price - (item.price * item.discount / 100)}</h2></td>
+                                                    <td><h2>{symbol}{getProductPrice(item)}</h2></td>
+                                                    <td><h2>{symbol}{item.discount ? item.discount.toFixed(2) : 0.00}</h2></td>
                                                     <td>
                                                         <div className="qty-box">
                                                             <div className="input-group">
-                                                                <input
+                                                                <Input
+                                                                    min="1"
                                                                     type="number"
                                                                     name="quantity"
                                                                     onChange={(e) => handleQtyUpdate(item, e.target.value)}
-                                                                    className="form-control input-number"
                                                                     defaultValue={item.qty}
-                                                                    style={{ borderColor: quantityError && 'red' }}
                                                                 />
                                                             </div>
-                                                        </div>{(item.qty >= item.stock) ? 'out of Stock' : ''}
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         
@@ -139,7 +155,7 @@ const CartPage = () => {
                                     <tfoot>
                                         <tr>
                                             <td>total price :</td>
-                                            <td><h2>{symbol} {total} </h2></td>
+                                            <td><h2>{symbol} {total.toFixed(2)} </h2></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -154,7 +170,7 @@ const CartPage = () => {
                                 </Link>
                             </Col>
                             <Col xs="6">
-                                <Link href={`/account/checkout.html`} ><a className="btn btn-solid">check out</a></Link>
+                                <Link href={`/account/checkout`} ><a className="btn btn-solid">check out</a></Link>
                             </Col>
                         </Row>
                     </Container>

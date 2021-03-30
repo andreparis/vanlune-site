@@ -9,6 +9,8 @@ import { CompareContext } from '../../../helpers/Compare/CompareContext';
 import { CurrencyContext } from '../../../helpers/Currency/CurrencyContext';
 import emptySearch from '../../../public/assets/images/empty-search.jpg';
 import axios from 'axios';
+import {getGame} from '../../../services/game';
+import { useRouter } from 'next/router'; 
 
 const SpecialProducts = ({ type, fluid, designClass, cartClass, heading, noTitle, title, inner, line, hrClass, backImage }) => {
     const [activeTab, setActiveTab] = useState('new');
@@ -18,15 +20,17 @@ const SpecialProducts = ({ type, fluid, designClass, cartClass, heading, noTitle
     const wishListContext = useContext(WishlistContext);
     const compareContext = useContext(CompareContext);
     const curContext = useContext(CurrencyContext);
+    const router = useRouter();
     const currency = curContext.state;
     const quantity = context.quantity;
 
     useEffect(() => {
         async function fetchData () {
             setIsLoading(true);
+            let gameId = getGame(router.query.game);
             try {
                 await axios
-                .get(process.env.PRODUCTS_URL+"/tag?tag="+activeTab+'&game=1')
+                .get(process.env.PRODUCTS_URL+"/filters?tagName="+activeTab+"&game="+gameId)
                 .then(function (result) {
                     if (result.status != 200)
                         throw "";
@@ -104,7 +108,7 @@ const SpecialProducts = ({ type, fluid, designClass, cartClass, heading, noTitle
                                         data && data.slice(0, 8).map((product, i) =>
                                             <ProductItem key={i} product={product} symbol={currency.symbol}
                                                 addCompare={() => compareContext.addToCompare(product)}
-                                                addCart={() => context.addToCart(product, quantity)}
+                                                addCart={(customize, variant) => context.addToCart(product, quantity, customize, variant)}
                                                 addWishlist={() => wishListContext.addToWish(product)}
                                                 cartClass={cartClass} backImage={backImage} />
                                         )

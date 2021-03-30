@@ -1,63 +1,34 @@
 import React,{useState,useEffect,useContext} from 'react';
 import CommonLayout from '../../../components/shop/common-layout';
 import { Container, Row, Form, Label, Input ,Col, Button, Alert } from 'reactstrap';
-import firebase ,{googleProvider,facebookProvider} from '../../../config/base'
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/router';
 import LoginContext from '../../../helpers/login';
 import { Spinner } from 'reactstrap';
-import axios from 'axios';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import GoogleLogin from 'react-google-login';
+import axios from 'axios';  
+import { useRouter } from 'next/router';
 
 const Login = () => {
-    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState(
-        localStorage.getItem('Name')
-    );
+    const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const loginContext = useContext(LoginContext);
-    const setUserInfo = loginContext.setUser;
-    const setAuthToken = loginContext.setAuthorizationToken;
     const [visible, setVisible] = useState(false);
     const onDismiss = () => setVisible(false);
     const [alertText, setAlertText] = useState([]);
 
     useEffect(() => {
-        loginContext.logOut();
-    }, []);
-    useEffect(() => {
-        localStorage.setItem('Name', name);
-    }, [name]);
+        if (alertText.length > 0)
+            setVisible(true);
+    }, [alertText]);
 
     const loginAuth = async (email,password) => {
-        setIsLoading(true);
-        try {
-            let payload = new Object();
-            payload.email = email;
-            payload.password = password;
-            await axios
-            .post(process.env.ACCOUNT_URL+'/auth', JSON.stringify(payload))
-            .then(function (result) {
-                if (result.data.Error != undefined &&
-                    result.data.Error != '') {
-                    toast(result.data.Error);
-                }
-                else {
-                    if (result.data.Content.access_token == '' ||
-                    result.data.Content.access_token == undefined ||
-                    result.data.Content.user == undefined) 
-                        throw "";
-                    let user = result.data.Content.user;
-                    let authToken = {token: result.data.Content.access_token, status: 0}
-                    loginContext.logIn(user, authToken);
-                    router.push('/');
-                }
-            });            
-        } catch (error) {
-            toast.error("Try again later!", error);
-        }
-        setIsLoading(false);
+        let payload = new Object();
+        payload.email = email;
+        payload.password = password;
+        await login(payload);
     }
 
     const ShowLoading = () => ( 
@@ -89,42 +60,72 @@ const Login = () => {
         }
         setIsLoading(false);
     }
-    
-    const googleAuth = async () => {
-        try {
-                firebase.auth().signInWithPopup(googleProvider).then(function (result) {
-                setName(result.user.displayName);
-                setTimeout(() => {
-                    router.push(`/account/checkout.html`);
-                }, 200);
-            
-            });
-        } catch (error) {
-            setTimeout(() => {
-                toast.error("Oppss.. The password is invalid or the user does not have a password.");
-            }, 200);
+        
+    const responseFacebook = async (response) => {
+        console.log(response);
+        if (response['accessToken'] && response['email'] && response['name']) {
+            await login({facebookLogin: response});
         }
-    };
-    
-    const facebookAuth = async () => {
-        try {
-                firebase.auth().signInWithPopup(facebookProvider).then(function (result) {
-                setName(result.user.displayName)
-                setTimeout(() => {
-                    router.push(`/account/checkout.html`);
-                }, 200);
-            });
-        } catch (error) {
-            setTimeout(() => {
-                toast.error("Oppss.. The password is invalid or the user does not have a password.");
-            }, 200);
+        else if (response['status'] == 'not_authorized') {
+            alert("You must authorize when facebook login request!");
+        }
+        else {
+            alert("Facebook has not authorizes you...");
         }
     }
 
-    useEffect(() => {
-        if (alertText.length > 0)
-            setVisible(true);
-    },[alertText]);
+    const responseFbRegister = (response) => {
+        if (response['accessToken'] && response['email'] && response['name']) {
+            router.push('/account/register?email='+response['email']+'&name='+response['name']);
+        }
+        else {
+            alert("Facebook has not authorizes you...");
+        }
+    }
+
+    const responseGoogle = async (response) => {
+        if (response['accessToken'] && response['profileObj']['email'] && response['profileObj']['name']) {
+            await login({googleLogin: response});
+        }
+        else {
+            alert("Google has not authorizes you...");
+        }
+    }
+
+    const responseGgRegister = (response) => {
+        if (response['accessToken'] && response['profileObj']['email'] && response['profileObj']['name']) {
+            router.push('/account/register?email='+response['profileObj']['email']+'&name='+response['profileObj']['name']);
+        }
+        else {
+            alert("Google has not authorizes you...");
+        }
+    }
+    
+    const login = async (payload) => {
+        setIsLoading(true);
+        try {
+            await axios
+            .post(process.env.ACCOUNT_URL+'/auth', JSON.stringify(payload))
+            .then(function (result) {
+                if (result.data.Error != undefined &&
+                    result.data.Error != '') {
+                    toast(result.data.Error);
+                }
+                else {
+                    if (result.data.Content.access_token == '' ||
+                    result.data.Content.access_token == undefined ||
+                    result.data.Content.user == undefined) 
+                        throw "";
+                    let user = result.data.Content.user;
+                    let authToken = {token: result.data.Content.access_token}
+                    loginContext.logIn(user, authToken);
+                }
+            });            
+        } catch (error) {
+            toast.error("Try again later!", error);
+        }
+        setIsLoading(false);
+    }
 
     const AlertComponent = () => (
         <Alert color="danger" isOpen={visible} toggle={onDismiss}>
@@ -150,11 +151,11 @@ const Login = () => {
                                 <Form className="theme-form">
                                     <div className="form-group">
                                         <Label for="email">Email</Label>
-                                        <Input type="text" defaultValue={email} onChange={e => setEmail(e.target.value)} className="form-control"  placeholder="Email" required="" />
+                                        <Input type="text" defaultValue="" onChange={e => setEmail(e.target.value)} className="form-control"  placeholder="Email" required="" />
                                     </div>
                                     <div className="form-group">
                                         <Label for="review">Password</Label>
-                                        <Input type="password" defaultValue={password} onChange={e => setPassword(e.target.value)} className="form-control" id="review"
+                                        <Input type="password" defaultValue="" onChange={e => setPassword(e.target.value)} className="form-control" id="review"
                                             placeholder="Enter your password" required="" />
                                     </div>
                                     <div className="form-group">
@@ -168,10 +169,26 @@ const Login = () => {
                                     </div>  
                                     <div className="footer-social">
                                     
-                                    {/* <ul>
-                                        <li onClick={facebookAuth}><i className="fa fa-facebook" aria-hidden="false"></i></li>
-                                        <li onClick={googleAuth}><a><i className="fa fa-google-plus" aria-hidden="false"></i></a></li>
-                                    </ul>                                    */}
+                                    <ul>
+                                        <FacebookLogin
+                                            appId="369496744123960"
+                                            autoLoad={false}
+                                            fields="name,email,picture"
+                                            callback={responseFacebook} 
+                                            render={renderProps => (
+                                                <li onClick={renderProps.onClick}><a><i className="fa fa-facebook" aria-hidden="false"></i></a></li>
+                                            )}
+                                        />
+                                        <GoogleLogin
+                                            clientId="708505409639-99gttc3dhg4mk1lokljo9hg0ojl5pi9q.apps.googleusercontent.com"
+                                            render={renderProps => (
+                                                <li onClick={renderProps.onClick}><a><i className="fa fa-google-plus" aria-hidden="false"></i></a></li>
+                                            )}
+                                            onSuccess={responseGoogle}
+                                            onFailure={responseGoogle}
+                                            cookiePolicy={'single_host_origin'}
+                                        />  
+                                    </ul> 
                                     </div>
                                 </Form>
                             </div>
@@ -183,7 +200,29 @@ const Login = () => {
                                 <p>Sign up for a free account at our store. Registration is quick and easy. It allows you to be
                             able to order from our shop. To start shopping click register.</p><a href="register"
                                     className="btn btn-solid">Create an Account</a>
-                            </div>
+                                <div className="footer-social">
+                                    <ul>
+                                        <FacebookLogin
+                                            appId="369496744123960"
+                                            autoLoad={false}
+                                            fields="name,email,picture" 
+                                            callback={responseFbRegister} 
+                                            render={renderProps => (
+                                                <li onClick={renderProps.onClick}><a><i className="fa fa-facebook" aria-hidden="false"></i></a></li>
+                                        )}
+                                        />
+                                        <GoogleLogin
+                                            clientId="708505409639-99gttc3dhg4mk1lokljo9hg0ojl5pi9q.apps.googleusercontent.com"
+                                            render={renderProps => (
+                                                <li onClick={renderProps.onClick}><a><i className="fa fa-google-plus" aria-hidden="false"></i></a></li>
+                                            )}
+                                            onSuccess={responseGgRegister}
+                                            onFailure={responseGgRegister}
+                                            cookiePolicy={'single_host_origin'}
+                                        />  
+                                    </ul> 
+                                </div>
+                            </div> 
                         </Col>
                     </Row>
                 </Container>

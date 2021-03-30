@@ -29,17 +29,40 @@ const CartProvider = (props) => {
   }, [cartItems])
 
   // Add Product To Cart
-  const addToCart = (item ,quantity) => {
+  const addToCart = (item ,quantity, customize = [], variant = {}) => {
     toast.success("Product Added Successfully !");
-    const index = cartItems.findIndex(itm => itm.id === item.id)
+    let cartProduct = Object.assign({}, item);
+    const index = cartItems.findIndex(itm => itm.id === cartProduct.id);
+    cartProduct['customizes'] = customize;
+    cartProduct['variants'] = [variant];
+    
     if (index !== -1) {
       const product = cartItems[index];
-      cartItems[index] = { ...item, ...item, qty: quantity, total:(item.price - (item.price * item.discount / 100)) * quantity };
+      cartItems[index] = { ...cartProduct, ...cartProduct, 
+        qty: quantity, 
+        total: getProductTotal(cartProduct, quantity)
+      };
       setCartItems([...cartItems])
-    } else {
-      const product = { ...item, qty: quantity, total: (item.price - (item.price * item.discount / 100)) * quantity }
+    } 
+    else {
+      const product = { ...cartProduct, qty: quantity, 
+        total: getProductTotal(cartProduct, quantity)
+      }
       setCartItems([...cartItems, product])
     }
+  }
+
+  const getProductTotal = (product, qtdy = 1) => {
+    var total = (product.price - (product.price * product.discount / 100)) * qtdy;
+    if (product['variants'][0]['factor'])
+      total *= product['variants'][0]['factor'];
+    if (product['customizes'] && product['customizes'].length > 0) {
+      for (var i = 0; i < product['customizes'].length; i ++) {
+        let customize = product['customizes'][i]['value'][0];
+        total *= customize['factor'];
+      }
+    }
+    return total.toFixed(2);
   }
 
   const removeFromCart = (item) => {
@@ -64,12 +87,12 @@ const CartProvider = (props) => {
       const index = cartItems.findIndex(itm => itm.id === item.id)
       if(index !== -1){
         const product = cartItems[index];
-        cartItems[index] = { ...product, ...item, qty: quantity, total: item.price * quantity  }; 
+        cartItems[index] = { ...product, ...item, qty: quantity, total: getProductTotal(item, quantity)  }; 
 
         setCartItems([...cartItems])
         toast.info("Product Quantity Updated !");
       }else{
-        const product = {...item, qty: quantity, total: (item.price - (item.price * item.discount / 100)) * quantity }
+        const product = {...item, qty: quantity, total: getProductTotal(item, quantity) }
         setCartItems([...cartItems, product])
         toast.success("Product Added Updated !");
       }

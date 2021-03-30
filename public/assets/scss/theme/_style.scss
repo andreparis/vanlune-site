@@ -1938,6 +1938,39 @@ header {
 /*=====================
     3.Home slider CSS start
 ==========================*/
+.image-bg-full {
+
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("#{$assetspath}/banner/wow.jpg");
+
+  height: 100vh;
+  width: 100vw;
+  background-color: #fff;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+
+  .image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: var(--theme-deafult);
+    border-radius: 50%;
+    // background-image: url("#{$assetspath}/home-banner/2.jfif");
+
+  }
+}
+
 .home-slider,
 .center-slider {
 
@@ -1982,13 +2015,14 @@ header {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    height: 40vh;
+    width: 100%;
+    height: 100%;
 
-    @for $i from 1 through 56 {
-      &.home#{$i} {
-        background-image: url("#{$assetspath}/home-banner/#{$i}.jpg");
-      }
-    }
+    // @for $i from 1 through 56 {
+    //   &.home#{$i} {
+    //     background-image: url("#{$assetspath}/home-banner/#{$i}.jpg");
+    //   }
+    // }
   }
 
   .slider-details {
@@ -2614,7 +2648,7 @@ header {
     8.Banner Timer CSS start
 ==========================*/
 .banner-timer {
-  background-image: url("#{$assetspath}/offer-banner.jpg");
+  // background-image: url("#{$assetspath}/offer-banner.jpg");
   background-size: cover;
   margin-left: 20px;
   margin-right: 20px;
@@ -2673,6 +2707,60 @@ header {
 /*=====================
     9.Category CSS start
 ==========================*/
+.category-block-home {
+  .category-image {
+    margin: 50%;
+    text-align: center;
+    border: 1px solid  $round-border;
+    border-radius: 100%;
+    width: 250px;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s ease;
+
+    &.svg-image {
+      svg {
+        width: 50px;
+        fill: var(--theme-deafult);
+      }
+    }
+  }
+
+  .category-details {
+    text-align: center;
+
+    h5 {
+      font-weight: 700;
+      margin:15px;
+      transition: 0.5s ease;
+      text-transform: uppercase;
+    }
+  }
+
+  &:hover {
+    .category-image {
+      background: rgba(113, 71, 125, 0.7);
+      transition: all 0.5s ease; 
+      opacity: 1;
+      -webkit-transition: .3s ease-in-out;
+      transition: .3s ease-in-out;     
+
+      img {
+        opacity: .5;
+      }
+    }
+
+    .category-details {
+      h5 {
+        color: var(--theme-deafult);
+        transition: all 0.5s ease;
+      }
+    }
+  }
+}
+
 .category-block {
   .category-image {
     margin: 0 auto;
@@ -4452,17 +4540,15 @@ header {
   //   background-image: url('/assets/images/parallax/18.jpg');
   // }
 
+  // @for $i from 1 through 28 {
+  //   &.parallax-banner#{$i} {
+  //     background-image: url("#{$assetspath}/parallax/#{$i}.jpg");
+  //   }
+  // }
 
-
-  @for $i from 1 through 28 {
-    &.parallax-banner#{$i} {
-      background-image: url("#{$assetspath}/parallax/#{$i}.jpg");
-    }
-  }
-
-  &.parallax-christmas {
-    background-image: url("/assets/images/christmas/parallax/1.jpg");
-  }
+  // &.parallax-christmas {
+  //   background-image: url("/assets/images/christmas/parallax/1.jpg");
+  // }
 
   &.parallax-layout {
     padding-top: 350px;
@@ -6100,7 +6186,7 @@ header {
   padding: 0 80px;
 
   .layout-8-bg {
-    background-image: url("#{$assetspath}/electronics/bg.jpg");
+    // background-image: url("#{$assetspath}/electronics/bg.jpg");
     background-size: cover;
     background-attachment: fixed;
     height: 100%;
@@ -6415,7 +6501,7 @@ footer {
   }
 
   &.footer-christmas {
-    background-image: url('/assets/images/christmas/footer-bg.jpg');
+    // background-image: url('/assets/images/christmas/footer-bg.jpg');
     background-size: cover;
     background-position: center;
     display: block;
@@ -6901,7 +6987,7 @@ footer {
 }
 
 .bg-img-gym {
-  background-image: url("#{$assetspath}/gym/bg.jpg");
+  // background-image: url("#{$assetspath}/gym/bg.jpg");
 
   &.overlay-cls {
     background-blend-mode: overlay;
@@ -7618,7 +7704,7 @@ footer {
 
 .tools-parallax-product {
   &.full-banner {
-    background-image: url("/assets/images/parallax/21.jpg");
+    // background-image: url("/assets/images/parallax/21.jpg");
     background-size: cover;
     background-position: center center;
     display: block;
@@ -7960,7 +8046,7 @@ footer {
 }
 
 .sticky-footer {
-  background-image: url("#{$assetspath}/tools/footer.jpg");
+  // background-image: url("#{$assetspath}/tools/footer.jpg");
 
   .darken-layout {
     background-color: transparent !important;
@@ -8145,9 +8231,9 @@ footer {
 }
 
 
-.product_section {
-  background-image: url("#{$assetspath}/marijuana/leaf-bg.jpg");
-}
+// .product_section {
+//   // background-image: url("#{$assetspath}/marijuana/leaf-bg.jpg");
+// }
 
 .border-box {
   &.tools-grey {
@@ -8352,7 +8438,7 @@ footer {
         margin-bottom: -45px;
         z-index: 1;
         position: relative;
-        background-image: url("/assets/images/metro.jpg");
+        // background-image: url("/assets/images/metro.jpg");
         background-blend-mode: overlay;
 
         .center-thing {
@@ -13562,7 +13648,6 @@ footer {
 }
 
 .layout-20 {
-  background-image: url("/assets/images/nursery/bg.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -13571,7 +13656,6 @@ footer {
 
 .p-0 {
   .home-slider {
-    // background-image: url('/assets/images/home-banner/33.jpg');
     background-size: cover;
     background-position: center center;
     display: block;
@@ -13586,7 +13670,6 @@ footer {
   &:after {
     content: "";
     position: absolute;
-    background: url("/assets/images/game/top.png");
     top: -1px;
     width: 100%;
     height: 85px;
@@ -13597,7 +13680,7 @@ footer {
   &:before {
     content: "";
     position: absolute;
-    background: url("/assets/images/game/back.png");
+
     bottom: -12px;
     width: 100%;
     height: 110px;
@@ -13691,7 +13774,6 @@ footer {
 
 @for $i from 1 through 28 {
   .market-bg#{$i} {
-    background-image: url("#{$assetspath}/marketplace/#{$i}.jpg");
     background-size: cover;
     background-position: center;
     height: 250px;
@@ -14677,7 +14759,6 @@ table {
       right: -0;
       height: 100%;
       display: block;
-      background: url("/assets/images/vendor/step-arrow.png") no-repeat center center;
     }
 
     .row {
@@ -15115,7 +15196,6 @@ table {
 
 // coming soon //
 .template-password {
-  background: url("/assets/images/coming-soon.jpg");
   background-size: cover;
   height: 100vh;
 
@@ -15179,7 +15259,7 @@ table {
 }
 
 .flower-bg {
-  background-image: url("/assets/images/flower/flower-bg.jpg");
+  
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -15188,7 +15268,6 @@ table {
 }
 
 .bg-block {
-  background-image: url("/assets/images/flower/bg.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -15211,7 +15290,7 @@ table {
 
 .game-banner {
   .banner-timer {
-    background-image: url(/assets/images/banner-game.jpg);
+    // background-image: url(/assets/images/banner-game.jpg);
     background-blend-mode: overlay;
     background-color: rgba($black, 0.4);
     margin-left: 0;
@@ -16264,19 +16343,6 @@ table {
           background-image: url("/assets/images/bg-image.jpg");
       }
   }
-}
-
-  video#background-video {
-    position: absolute;
-    z-index: 0;
-    background: url(/assets/video/2.mp4) no-repeat;
-    background-size: 100% 100%;
-    top: 0px;
-    left: 0px; 
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
 }
 
 

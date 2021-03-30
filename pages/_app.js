@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import ThemeSettings from '../components/customizer/theme-settings';
 import '../public/assets/scss/app.scss';
 import { ToastContainer } from 'react-toastify';
 import TapTop from '../components/common/widgets/Tap-Top';
-import MessengerCustomerChat from 'react-messenger-customer-chat';
 import { MenuContextProvider } from '../helpers/menu/MenuContext';
 import CartContextProvider from '../helpers/cart/CartContext';
 import LoginProvider from '../helpers/login/LoginContext';
@@ -46,11 +44,6 @@ export default function MyApp({ Component, pageProps }) {
           </div>
           :
           <>
-            <MessengerCustomerChat
-              pageId="2123438804574660"
-              appId="406252930752412"
-              htmlRef="https://connect.facebook.net/en_US/sdk.js"
-            />
           <Helmet>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <title>PLAYER2 - Best ecommerce for Gamers</title>
@@ -70,7 +63,6 @@ export default function MyApp({ Component, pageProps }) {
                         </WishlistContextProvider>
                       </CartContextProvider>
                     </CurrencyContextProvider>
-                    {/* <ThemeSettings /> */}
                   </CompareContextProvider>
                   </LoginProvider>
               </SettingProvider>             
