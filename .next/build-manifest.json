@@ -14,6 +14,16 @@
     "static/development/_ssgManifest.js"
   ],
   "pages": {
+    "/": [
+      "static/chunks/main.js",
+      "static/chunks/webpack.js",
+      "static/chunks/pages/index.js"
+    ],
+    "/404": [
+      "static/chunks/main.js",
+      "static/chunks/webpack.js",
+      "static/chunks/pages/404.js"
+    ],
     "/_app": [
       "static/chunks/main.js",
       "static/chunks/webpack.js",
@@ -24,15 +34,15 @@
       "static/chunks/webpack.js",
       "static/chunks/pages/_error.js"
     ],
-    "/account/checkout": [
+    "/account/login": [
       "static/chunks/main.js",
       "static/chunks/webpack.js",
-      "static/chunks/pages/account/checkout.js"
+      "static/chunks/pages/account/login.js"
     ],
-    "/account/orders": [
+    "/games": [
       "static/chunks/main.js",
       "static/chunks/webpack.js",
-      "static/chunks/pages/account/orders.js"
+      "static/chunks/pages/games.js"
     ]
   },
   "ampFirstPages": []

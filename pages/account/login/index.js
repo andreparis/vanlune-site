@@ -51,7 +51,7 @@ const Login = () => {
             .then(function (result) {
                 if (result.status != 200)
                     throw "";
-                alert("Check your e-mail!");
+                toast.success("Check your e-mail!");
             });                
         }
         catch {
@@ -66,10 +66,10 @@ const Login = () => {
             await login({facebookLogin: response});
         }
         else if (response['status'] == 'not_authorized') {
-            alert("You must authorize when facebook login request!");
+            toast.error("You must authorize when facebook login request!");
         }
         else {
-            alert("Facebook has not authorizes you...");
+            toast.error("Facebook has not authorizes you...");
         }
     }
 
@@ -78,7 +78,7 @@ const Login = () => {
             router.push('/account/register?email='+response['email']+'&name='+response['name']);
         }
         else {
-            alert("Facebook has not authorizes you...");
+            toast.error("Facebook has not authorizes you...");
         }
     }
 
@@ -87,7 +87,7 @@ const Login = () => {
             await login({googleLogin: response});
         }
         else {
-            alert("Google has not authorizes you...");
+            toast.error("Google has not authorizes you...");
         }
     }
 
@@ -96,7 +96,7 @@ const Login = () => {
             router.push('/account/register?email='+response['profileObj']['email']+'&name='+response['profileObj']['name']);
         }
         else {
-            alert("Google has not authorizes you...");
+            toast.error("Google has not authorizes you...");
         }
     }
     
