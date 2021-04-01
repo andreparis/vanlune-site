@@ -17,7 +17,6 @@ const NewPasswordPage = () => {
 
 
     useEffect(() => {
-        console.log(router.query.u17);
         setToken(router.query.u17);
         async function validateToken() {
             let payload = new Object();
@@ -63,7 +62,6 @@ const NewPasswordPage = () => {
             await axios
             .post(process.env.ACCOUNT_URL+"/recover/password", user)
             .then((result) => { 
-                console.log(result);
                 if (result.status != 200) {
                     throw "";
                 }

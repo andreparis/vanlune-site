@@ -1,7 +1,6 @@
 import Router from 'next/router';
 
 export const getGame = (game) => {
-    console.log('game is '+game);
     switch(String(game).trim().toLowerCase()) {
         case "wow":
             return 1;
@@ -17,7 +16,6 @@ export const setLocalGame = (game) => {
 }
 
 export const getLocalGame = () => {
-    console.log('game')
     return localStorage.getItem("game");
 }
 

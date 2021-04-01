@@ -51,8 +51,6 @@ const Currency = ({icon}) => {
             return currencies;
         })
         .catch(function(error) {
-            console.log(error);
-
             return  [];
         });
     }

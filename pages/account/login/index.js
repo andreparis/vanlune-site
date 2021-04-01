@@ -62,7 +62,6 @@ const Login = () => {
     }
         
     const responseFacebook = async (response) => {
-        console.log(response);
         if (response['accessToken'] && response['email'] && response['name']) {
             await login({facebookLogin: response});
         }

@@ -47,21 +47,15 @@ const Order = () => {
         catch (error) { 
             setIsLoading(false);
             getOrder();
-            console.log(error);
         }
     }
 
     const handlePageClick = (e) => {
         if (orders.length == 0)
             return;
-        console.log("handlePageClick");
-        console.log(e);
-        console.log(orders);
         const selectedPage = e.selected;
         const offset = selectedPage * state.perPage;
-        console.log("offset = "+ offset + "; state.perPage = "+ state.perPage);
         const slice = orders.slice(offset, offset + state.perPage);
-        console.log(slice);
         const postData = items(slice);
         setState({
             perPage: 5,

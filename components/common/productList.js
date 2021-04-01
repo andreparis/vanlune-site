@@ -44,10 +44,8 @@ const ProductList = ({ colClass, layoutList,openSidebar,noSidebar }) => {
                     categoryName: product
                 }
             });
-            console.log(result.data.Content);
             setData(result.data.Content);            
         } catch (e) {
-            console.log(e);
         }        
     }
 

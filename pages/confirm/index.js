@@ -13,7 +13,6 @@ const ConfirmPage = () => {
     useEffect(() => {
         async function fetchData() {
             setIsConfirmed(false);
-            console.log(router.query.u19);
             let payload = { link: router.query.u19 };
             try {
                 await axios

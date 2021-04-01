@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Row, Col, Media, Modal, ModalBody, Input } from 'reactstrap';
 import CartContext from '../../../helpers/cart';
 import { CurrencyContext } from '../../../helpers/Currency/CurrencyContext';
+import { toast } from 'react-toastify';
 
 const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass, productDetail, addCompare, title}) => {
     // eslint-disable-next-line
@@ -58,7 +59,6 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
         }
         else if (e.target.value &&
             e.target.value >= 0) {
-            console.log(product.variants[e.target.value]);
             setServerVariant(product.variants[e.target.value]);
         }
     };
@@ -83,8 +83,6 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
     };
 
     const handleClickAddCart = (e) => {
-        console.log(product['customizes']);
-        console.log(product['variants']);
         let hasVariants = product['variants'] && Array(product['variants']).filter(v => v['factor'] != 1);
         let hasCustomize = product['customizes'] && product['customizes'].length > 0;
         if (hasVariants || hasCustomize) {
@@ -95,9 +93,8 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
         }
     }
 
-    const handleAddCart = (e) => {
+    const handleAddCart = (e) => {        
         let hasVariants = serverVariant['name'] == undefined;
-
         if (hasVariants) {
             toast("Please, select one of each options!");
         }
@@ -235,8 +232,7 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
                                         {product.variants ?
                                             <Input type="select" name="server" onChange={onChangeModalFactor} defaultValue={()=> {setModalServerDefault('')}}>
                                                 <option value="clean">Choose a server...</option>
-                                                {product.variants.map((server, i) => {
-                                                    
+                                                {product.variants.map((server, i) => {                                                    
                                                     return (<option key={i} value={i}>{server.name} x {server.factor}</option>)
                                                 })
                                             }
@@ -247,7 +243,7 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
                                         <h6 className="product-title">Extra</h6>
                                         {product.customizes.map((item, ix) => {
                                             return(<div key={ix}>
-                                                <h7><b>{(ix+1)+".  " +item.name}</b></h7>
+                                                <b>{(ix+1)+".  " +item.name}</b>
                                                 <Input type="select" name={ix} onChange={onChangeModalExtra}>
                                                     <option value="clean">Choose an option...</option>
                                                     {item.value.map((custom, i) => {                                                    
@@ -291,8 +287,7 @@ const ProductItem = ({ product, addCart, backImage, des, addWishlist, cartClass,
                                         </div>
                                     </div>
                                     <div className="product-buttons">
-                                        <button className="btn btn-solid" onClick={() => handleAddCart} >add to cart</button>
-                                        {/* <button className="btn btn-solid" onClick={clickProductDetail} >View detail</button> */}
+                                        <button className="btn btn-solid" onClick={handleAddCart} >add to cart</button>
                                     </div>
                                 </div>
                             </Col>

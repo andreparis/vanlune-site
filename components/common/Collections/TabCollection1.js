@@ -37,12 +37,10 @@ const SpecialProducts = ({ type, fluid, designClass, cartClass, heading, noTitle
                     setData(result.data.Content);
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             }
             catch {
                 setActiveTab(activeTab);
-                console.log('failed');
             }
             setIsLoading(false);            
         }
@@ -78,6 +76,82 @@ const SpecialProducts = ({ type, fluid, designClass, cartClass, heading, noTitle
                             <Tab className={activeTab == 'furniture' ? 'active' : ''} onClick={() => setActiveTab('special')}>SPECIAL</Tab>
                         </TabList>
 
+                        <TabPanel>
+                            <Row className="no-slider">
+                                {isLoading ?
+                                <div className="row mx-0 margin-default">
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                </div> :
+                                data.length === 0 ?
+                                        <Col xs="12">
+                                            <div>
+                                                <div className="col-sm-12 empty-cart-cls text-center">
+                                                    <Media src={emptySearch} className="img-fluid mb-4 mx-auto" alt="" />
+                                                    <h3><strong>Your Cart is Empty</strong></h3>
+                                                    <h4>Explore more shortlist some items.</h4>
+                                                </div>
+                                            </div>
+                                        </Col> :
+                                        data && data.slice(0, 8).map((product, i) =>
+                                            <ProductItem key={i} product={product} symbol={currency.symbol}
+                                                addCompare={() => compareContext.addToCompare(product)}
+                                                addCart={(customize, variant) => context.addToCart(product, quantity, customize, variant)}
+                                                addWishlist={() => wishListContext.addToWish(product)}
+                                                cartClass={cartClass} backImage={backImage} />
+                                        )
+                                }
+                            </Row>
+
+                        </TabPanel>
+                        <TabPanel>
+                            <Row className="no-slider">
+                                {isLoading ?
+                                <div className="row mx-0 margin-default">
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                    <div className="col-xl-3 col-lg-4 col-6">
+                                        <PostLoader />
+                                    </div>
+                                </div> :
+                                data.length === 0 ?
+                                        <Col xs="12">
+                                            <div>
+                                                <div className="col-sm-12 empty-cart-cls text-center">
+                                                    <Media src={emptySearch} className="img-fluid mb-4 mx-auto" alt="" />
+                                                    <h3><strong>Your Cart is Empty</strong></h3>
+                                                    <h4>Explore more shortlist some items.</h4>
+                                                </div>
+                                            </div>
+                                        </Col> :
+                                        data && data.slice(0, 8).map((product, i) =>
+                                            <ProductItem key={i} product={product} symbol={currency.symbol}
+                                                addCompare={() => compareContext.addToCompare(product)}
+                                                addCart={(customize, variant) => context.addToCart(product, quantity, customize, variant)}
+                                                addWishlist={() => wishListContext.addToWish(product)}
+                                                cartClass={cartClass} backImage={backImage} />
+                                        )
+                                }
+                            </Row>
+
+                        </TabPanel>
                         <TabPanel>
                             <Row className="no-slider">
                                 {isLoading ?

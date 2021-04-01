@@ -10,6 +10,9 @@ import countryList from '../../../constants/countries';
 import LoginContext from '../../../helpers/login';
 import axios from 'axios';
 import { Spinner } from 'reactstrap';
+import {IoLogoWhatsapp} from 'react-icons/io';
+import {goHome} from '../../../services/game';
+import { toast } from 'react-toastify';
 
 
 const CheckoutPage = () => {    
@@ -19,7 +22,7 @@ const CheckoutPage = () => {
     const symbol = curContext.state.symbol;
     const currency = curContext.state.currency;
     const [editForm, setEditForm] = useState(false);
-    const [payment, setPayment] = useState('stripe');
+    const [payment, setPayment] = useState(1);
     const { register, handleSubmit, errors } = useForm(); // initialise the hook
     const router = useRouter();
     const [servers, setServer] = useState([])
@@ -28,8 +31,12 @@ const CheckoutPage = () => {
     const loginContext = useContext(LoginContext);
     const [obj, setObj] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [isPaying, setIsPaying] = useState(false);
 
     useEffect(() => {
+        if (cartItems.length == 0) {
+            goHome();
+        }
         let user = loginContext.userState;
         let name = user.name != undefined ? 
                 (user.name + "").split(' ') : 
@@ -64,21 +71,14 @@ const CheckoutPage = () => {
 
     const checkhandle = (value) => {
         setPayment(value)
-    }
+    }       
 
-    const onSuccess = (payment) => {
-        router.push({
-            pathname: '/account/order-success'+"?game="+router.query.game,
-            state: { payment: payment, items: cartItems, orderTotal: total, symbol: symbol }
-        })
-
-    }    
-
-    const onSubmit = data => {
+    const onSubmit = async data => {
         if (data == '' || data == undefined) {
             errors.showMessages();
             return;
         }
+        setIsPaying(true);
         try {
             var char = new Object();
             char.name = data.char_name;
@@ -100,25 +100,32 @@ const CheckoutPage = () => {
                 order.variant = order.product.variants[0];
                 order.customizes = order.product.customizes;
                 order.amount = cartItems[i].total;
-                order.payment = 1;
-
-                console.log(order);
+                order.payment = payment;
+                if (payment > 1 && data['paymentStatus'])
+                    order.paymentStatus = data['paymentStatus']
+                if (payment > 1 && data['externalId'])
+                    order.externalId = data['externalId']
 
                 orders.orders.push(order);
             }
-            postAxios(JSON.stringify(orders))
-            .then(() => {
-                router.push("https://wa.me/+5527996609851?text="+whatsappText());
-            }); 
-        } catch { alert('Something got wrong!'); }
+
+            await postAxios(JSON.stringify(orders));
+
+            cartContext.cleanCart();
+            router.push("https://wa.me/+5527996609851?text="+whatsappText()); 
+        } 
+        catch { toast.error('Something got wrong!'); }
+
+        setIsPaying(false);
     }; 
 
     const whatsappText = () => {
-        var text = "PLAYER2,\n\nPlayer 1, "+obj.first_name+" ("+obj.char_name+"), needs you! \n\n*Requested items*:";
+        var text = "PLAYER2,\n\nPlayer 1, "+obj.first_name+" ("+(obj.char_name ? 'No char informed' : obj.char_name)+"), needs you! \n\n*Requested items*:";
         text += "\n\n    *PRODUCT*    |    *PRICE*    |    *SERVER*    |    *EXTRAS*";
         for(let i = 0; i < cartItems.length; i++) {
             text+="\n"+cartItems[i].title+"  |    "+cartItems[i].price + "    |    "+cartItems[i].variants[0]['name']+"    |     "+getExtrasAsString(cartItems[i]['customizes'])
         }
+        text += "\n\n*PAYMENT METHOS*: "+ (payment == 1 ? 'PIX' : 'PAYPAL');
         text += "\n\n*Total*: R$ "+ cartTotal;
 
         return window.encodeURIComponent(text);
@@ -127,6 +134,7 @@ const CheckoutPage = () => {
     const getExtrasAsString = (extras) => {
         var text = '';
         for(var i = 0; i < extras.length; i++) {
+            let extra = extras[i];
             text += extra['name']+": "+extra['value'][0]['name']+';'
         }
         return text;
@@ -141,12 +149,10 @@ const CheckoutPage = () => {
                     AuthorizationToken: token,
                 }   
         });
-            let data = result.data;
-            console.log(data);    
+            let data = result.data;   
             
-            alert('Order submited success!');           
+            toast.success('Order submited success!');           
         } catch (e) {
-            console.log(e);
             throw e;
         }
     }
@@ -156,17 +162,29 @@ const CheckoutPage = () => {
         setObj(obj);
     }
 
+    const onSuccess = async (payment) => {
+        console.log(payment);
+        if (payment && 
+            payment['paid'] && 
+            payment['paymentID']) {
+                toast.success("PayPal has accepted your payment!");
+                obj['paymentStatus'] = payment['event_type'];
+                obj['externalId'] = payment['paymentID'];
+                await onSubmit(obj);
+        }
+    } 
+
     const onCancel = (data) => {
-        console.log('The payment was cancelled!', data);
+        toast.error('PayPal had sent you cancel your payment! In case that information is a mistake, please, contact us +55(27) 9 9660-9851 on WhatsApp.');
     }
 
     const onError = (err) => {
-        console.log("Error!", err);
+        toast.error('PayPal had sent get an error with your payment! In case that information is a mistake, please, contact us +55(27) 9 9660-9851 on WhatsApp.');
     }
 
     const client = {
-        sandbox: 'AZ4S98zFa01vym7NVeo_qthZyOnBhtNvQDsjhaZSMH-2_Y9IAJFbSD3HPueErYqN8Sa8WYRbjP7wWtd_',
-        production: 'AZ4S98zFa01vym7NVeo_qthZyOnBhtNvQDsjhaZSMH-2_Y9IAJFbSD3HPueErYqN8Sa8WYRbjP7wWtd_',
+        sandbox: 'AWVhxA675d_OAD6u86QHfFaJXKRcZsDyUGGjbQXuwh6Sv4o3xzZjq3CEPWfHAywW_F27JMdCSTYU-ujR',
+        production: 'EEhUW_L02PWPi_ZwuNiqkiq67bCfyqr_wZFYaMIXC1Z11mk57KzCndVAfT7w93zDsM3826DaTBLLOuXJ',
     }
 
     const onClickEditForm = async () => {
@@ -204,8 +222,7 @@ const CheckoutPage = () => {
                 });
             }
             catch (error){
-                console.log(error);
-                alert("Failed to update.Try again later!");
+                toast.error("Failed to update.Try again later!");
             }
             setIsLoading(false);            
         }
@@ -213,7 +230,7 @@ const CheckoutPage = () => {
     }
 
     const InputComponent = (value = "") => {   
-        return (<input type="text" defaultValue={value.name} />);
+        return (<input readOnly  type="text" value={value.name} />);
     }
 
     const ShowLoading = () => ( 
@@ -316,16 +333,33 @@ const CheckoutPage = () => {
                                                 </ul>
                                             </div>
                                             <div className="payment-box">
+                                                <div className="upper-box">
+                                                    <div className="payment-options">
+                                                        <ul>
+                                                            <li>
+                                                                <div className="radio-option stripe">
+                                                                    <input type="radio" name="payment-group" id="payment-2" defaultChecked={true} onClick={() => checkhandle(1)} />
+                                                                    <label htmlFor="payment-2">PIX/TED</label>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div className="radio-option paypal">
+                                                                    <input type="radio" name="payment-group" id="payment-1" onClick={() => checkhandle(2)} />
+                                                                    <label htmlFor="payment-1">PayPal<span className="image">
+                                                                        <Media src={paypal} alt="" /></span></label>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                                 {(cartTotal !== 0) ?
                                                     <div className="text-right">
-                                                        {(payment === 'stripe') ? 
-                                                        isLoading ? 
-                                                        <ShowLoading /> :
-                                                        <button type="submit" className="btn btn-solid btn-green">
-                                                            Order & Whatsapp
-                                                        </button> :
-                                                        
-                                                        <PaypalExpressBtn env={'sandbox'} client={client} currency={currency} total={cartTotal} onError={onError} onSuccess={onSuccess} onCancel={onCancel} />}
+                                                        {isPaying? 
+                                                        <li>Please, wait while we redirect you... <ShowLoading /></li>
+                                                        :
+                                                        (payment === 1) ? 
+                                                            <button type="submit" className="btn btn-solid btn-green" > <IoLogoWhatsapp /> Place Order</button> :
+                                                            <PaypalExpressBtn env={'sandbox'} client={client} currency={currency} total={cartTotal} onError={onError} onSuccess={onSuccess} onCancel={onCancel} />}
                                                     </div>
                                                     : ''}
                                             </div>

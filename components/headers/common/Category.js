@@ -37,14 +37,12 @@ const Category = () => {
             setCategories(result.data.Content);
         })
         .catch(err => {
-            console.log(err);
             alert("We are working to solve some network problems...");
         });
         setIsLoading(false);
     }, [game]);
 
     useEffect(() => {
-        console.log(categories);
         setProductLength(categories.length);
     }, [categories]);
 

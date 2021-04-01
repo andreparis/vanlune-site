@@ -58,7 +58,6 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
         }
         else if (e.target.value &&
             e.target.value >= 0) {
-            console.log(product.variants[e.target.value]);
             setServerVariant(product.variants[e.target.value]);
         }
     };
@@ -83,8 +82,6 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
     };
 
     const handleClickAddCart = (e) => {
-        console.log(product['customizes']);
-        console.log(product['variants']);
         let hasVariants = product['variants'] && Array(product['variants']).filter(v => v['factor'] != 1);
         let hasCustomize = product['customizes'] && product['customizes'].length > 0;
         if (hasVariants || hasCustomize) {
@@ -97,7 +94,6 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
 
     const handleAddCart = (e) => {
         let hasVariants = serverVariant['name'] == undefined;
-
         if (hasVariants) {
             toast("Please, select one of each options!");
         }
@@ -241,7 +237,7 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
                                         <h6 className="product-title">Extra</h6>
                                         {product.customizes.map((item, ix) => {
                                             return(<div key={ix}>
-                                                <h7><b>{(ix+1)+".  " +item.name}</b></h7>
+                                                <b>{(ix+1)+".  " +item.name}</b>
                                                 <Input type="select" name={ix} onChange={onChangeModalExtra}>
                                                     <option value="clean">Choose an option...</option>
                                                     {item.value.map((custom, i) => {                                                    

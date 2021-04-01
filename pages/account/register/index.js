@@ -58,7 +58,6 @@ const Register = () => {
             await axios
             .post(process.env.ACCOUNT_URL, user)
             .then((result) => { 
-                console.log(result);
                 if (result.status != 200) {
                     throw "";
                 }

@@ -9,8 +9,6 @@ const Checkout = () => {
     const [isLogged, setIsLogged] = useState(false);
 
     useEffect(() => {
-        console.log(loginContext.isValid());
-
         setIsLogged(loginContext.isValid());
     }, []);
 
