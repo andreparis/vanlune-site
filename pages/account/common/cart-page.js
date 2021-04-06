@@ -75,7 +75,7 @@ const CartPage = () => {
                                             <th scope="col">image</th>
                                             <th scope="col">product name</th>
                                             <th scope="col">price w/ options</th>
-                                            <th scope="col">discount</th>
+                                            <th scope="col">discount/item</th>
                                             <th scope="col">quantity</th>
                                             <th scope="col">action</th>
                                             <th scope="col">total</th>
@@ -127,7 +127,7 @@ const CartPage = () => {
                                                         </div>
                                                     </td>
                                                     <td><h2>{symbol}{getProductPrice(item)}</h2></td>
-                                                    <td><h2>{symbol}{item.discount ? item.discount.toFixed(2) : 0.00}</h2></td>
+                                                    <td><h2>{symbol}{item.discount ? (item.price*item.discount / 100).toFixed(2) : 0.00}</h2></td>
                                                     <td>
                                                         <div className="qty-box">
                                                             <div className="input-group">

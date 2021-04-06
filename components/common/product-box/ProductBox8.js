@@ -38,6 +38,13 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
     },
     [customizes]);
 
+    useEffect(() => {
+        if (!modal) {
+            setCustomizes([]);
+            setServerVariant({factor: 1.0});
+        }
+    }, [modal]);
+
     const onClickHandle = (img) => {
         setImage(img);
     }
@@ -112,7 +119,7 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
             <div className="product-box product-wrap" key={i}>
                 <div className="img-wrapper">
                     <div className="lable-block">
-                        {(product.new === true) ? <span className="lable3">new</span> : ''}
+                        {(product.tags.includes('new') === true) ? <span className="lable3">new</span> : ''}
                         {(product.sale === true) ? <span className="lable4">on sale</span> : ''}
 
                     </div>
@@ -219,7 +226,7 @@ const ProductItem = ({ product, addCart, addWishlist, addCompareList }) => {
                             <Col lg="6" className="rtl-text">
                                 <div className="product-right">
                                     <h2> {product.title} </h2>
-                                    <h3>{currency.symbol}{(product.price * currency.value * serverVariant.factor * customizeFactor).toFixed(2) }</h3>
+                                    <h3>{currency.symbol}{(product.price * currency.value * serverVariant.factor * customizeFactor - (product.price * product.discount / 100)).toFixed(2) }</h3>
                                     <div className="border-product">
                                         <h6 className="product-title">Server</h6>
                                         {product.variants ?

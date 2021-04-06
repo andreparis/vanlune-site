@@ -168,6 +168,7 @@ const CheckoutPage = () => {
             payment['paid'] && 
             payment['paymentID']) {
                 toast.success("PayPal has accepted your payment!");
+                toast.info("Please, don't close the windows!");
                 obj['paymentStatus'] = payment['event_type'];
                 obj['externalId'] = payment['paymentID'];
                 await onSubmit(obj);

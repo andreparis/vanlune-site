@@ -36,7 +36,6 @@ const Login = () => {
     )
 
     const recoverPassword = async (email) => {
-        setIsLoading(true);
         let text = []
         if (email == undefined ||
             email == '') {
@@ -45,9 +44,14 @@ const Login = () => {
 
             return;
         }
+        setIsLoading(true);
         try {
             await axios
-            .post(process.env.ACCOUNT_URL + '/recover/email', { email: email })
+            .post(process.env.ACCOUNT_URL + '/recover/email', { email: email },
+            {
+                headers:{
+                    origin: 'player2.store'
+            }})
             .then(function (result) {
                 if (result.status != 200)
                     throw "";
@@ -87,7 +91,8 @@ const Login = () => {
             await login({googleLogin: response});
         }
         else {
-            toast.error("Google has not authorizes you...");
+            console.log(response);
+            toast.error("Google has not authorizes you login...");
         }
     }
 
@@ -96,7 +101,8 @@ const Login = () => {
             router.push('/account/register?email='+response['profileObj']['email']+'&name='+response['profileObj']['name']);
         }
         else {
-            toast.error("Google has not authorizes you...");
+            console.log(response);
+            toast.error("Google has not authorizes you register...");
         }
     }
     
@@ -159,7 +165,7 @@ const Login = () => {
                                     </div>
                                     <div className="form-group">
                                     {isLoading ? 
-                                        <ShowLoading /> : 
+                                        <li>Please, wait... <ShowLoading /></li>: 
                                         <a href="#" className="btn btn-solid" onClick={() => loginAuth(email,password)}>Login</a>
                                     }
                                     </div>
@@ -168,6 +174,7 @@ const Login = () => {
                                     </div>  
                                     <div className="footer-social">
                                     
+                                    {isLoading ? '':
                                     <ul>
                                         <FacebookLogin
                                             appId="369496744123960"
@@ -187,7 +194,7 @@ const Login = () => {
                                             onFailure={responseGoogle}
                                             cookiePolicy={'single_host_origin'}
                                         />  
-                                    </ul> 
+                                    </ul> }
                                     </div>
                                 </Form>
                             </div>
@@ -200,6 +207,7 @@ const Login = () => {
                             able to order from our shop. To start shopping click register.</p><a href="register"
                                     className="btn btn-solid">Create an Account</a>
                                 <div className="footer-social">
+                                    {isLoading ? '' :
                                     <ul>
                                         <FacebookLogin
                                             appId="369496744123960"
@@ -211,7 +219,7 @@ const Login = () => {
                                         )}
                                         />
                                         <GoogleLogin
-                                            clientId="708505409639-99gttc3dhg4mk1lokljo9hg0ojl5pi9q.apps.googleusercontent.com"
+                                            clientId="137329362622-05heoijbr8gstfa0d7c026lln5qbl8q0.apps.googleusercontent.com"
                                             render={renderProps => (
                                                 <li onClick={renderProps.onClick}><a><i className="fa fa-google-plus" aria-hidden="false"></i></a></li>
                                             )}
@@ -219,7 +227,7 @@ const Login = () => {
                                             onFailure={responseGgRegister}
                                             cookiePolicy={'single_host_origin'}
                                         />  
-                                    </ul> 
+                                    </ul> }
                                 </div>
                             </div> 
                         </Col>
